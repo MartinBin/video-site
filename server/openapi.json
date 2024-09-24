@@ -1,0 +1,287 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/videos": {
+      "post": {
+        "operationId": "VideosController_createVideo",
+        "summary": "Create Video",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateVideoDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "videos"
+        ]
+      },
+      "get": {
+        "operationId": "VideosController_findAllVideos",
+        "summary": "Get All Videos",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "videos"
+        ]
+      }
+    },
+    "/videos/{id}": {
+      "get": {
+        "operationId": "VideosController_findVideo",
+        "summary": "Get Video by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "videos"
+        ]
+      }
+    },
+    "/videos/{videoId}/comments": {
+      "post": {
+        "operationId": "VideoCommentsController_createComment",
+        "summary": "Create comment",
+        "parameters": [
+          {
+            "name": "videoId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCommentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "comments"
+        ]
+      },
+      "get": {
+        "operationId": "VideoCommentsController_getComments",
+        "summary": "Get all video comments",
+        "parameters": [
+          {
+            "name": "videoId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "comments"
+        ]
+      }
+    },
+    "/likes/video/{videoId}/comment/{commentId}": {
+      "post": {
+        "operationId": "LikesController_likeComment",
+        "summary": "Like a comment",
+        "parameters": [
+          {
+            "name": "videoId",
+            "required": true,
+            "in": "path",
+            "description": "ID of the video",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "commentId",
+            "required": true,
+            "in": "path",
+            "description": "ID of the comment to like",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateLikeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The comment has been successfully liked."
+          },
+          "404": {
+            "description": "Video or comment not found."
+          }
+        },
+        "tags": [
+          "likes"
+        ]
+      },
+      "delete": {
+        "operationId": "LikesController_unlikeComment",
+        "summary": "Unlike a comment",
+        "parameters": [
+          {
+            "name": "videoId",
+            "required": true,
+            "in": "path",
+            "description": "ID of the video",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "commentId",
+            "required": true,
+            "in": "path",
+            "description": "ID of the comment to unlike",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateLikeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The comment has been successfully unliked."
+          },
+          "404": {
+            "description": "Video or comment not found or not liked by the user."
+          }
+        },
+        "tags": [
+          "likes"
+        ]
+      },
+      "get": {
+        "operationId": "LikesController_getCommentLikeCount",
+        "summary": "Get like count for a comment",
+        "parameters": [
+          {
+            "name": "videoId",
+            "required": true,
+            "in": "path",
+            "description": "ID of the video",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "commentId",
+            "required": true,
+            "in": "path",
+            "description": "ID of the comment to get like count",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved like count."
+          },
+          "404": {
+            "description": "Video or comment not found."
+          }
+        },
+        "tags": [
+          "likes"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "API Documentation",
+    "description": "The API description",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [
+    {
+      "name": "likes",
+      "description": ""
+    },
+    {
+      "name": "comments",
+      "description": ""
+    },
+    {
+      "name": "videos",
+      "description": ""
+    }
+  ],
+  "servers": [],
+  "components": {
+    "schemas": {
+      "CreateVideoDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "CreateCommentDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "CreateLikeDto": {
+        "type": "object",
+        "properties": {}
+      }
+    }
+  }
+}
