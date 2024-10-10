@@ -41,7 +41,7 @@ export class VideosService {
         );
 
         if(!updatedVideo){
-            throw new NotFoundException(`Video with ID "${id}" not found`):
+            throw new NotFoundException(`Video with ID "${id}" not found`);
         }
         return updatedVideo;
     }
