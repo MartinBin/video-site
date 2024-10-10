@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.0",
   "paths": {
-    "/videos": {
+    "/api/videos": {
       "post": {
         "operationId": "VideosController_createVideo",
         "summary": "Create Video",
@@ -39,7 +39,7 @@
         ]
       }
     },
-    "/videos/{id}": {
+    "/api/videos/{id}": {
       "get": {
         "operationId": "VideosController_findVideo",
         "summary": "Get Video by ID",
@@ -63,7 +63,7 @@
         ]
       }
     },
-    "/videos/{videoId}/comments": {
+    "/api/comments/{videoId}": {
       "post": {
         "operationId": "VideoCommentsController_createComment",
         "summary": "Create comment",
@@ -119,7 +119,22 @@
         ]
       }
     },
-    "/likes/video/{videoId}/comment/{commentId}": {
+    "/api/comments": {
+      "get": {
+        "operationId": "VideoCommentsController_getAllComments",
+        "summary": "Get all comments",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "comments"
+        ]
+      }
+    },
+    "/api/likes/video/{videoId}/comment/{commentId}": {
       "post": {
         "operationId": "LikesController_likeComment",
         "summary": "Like a comment",

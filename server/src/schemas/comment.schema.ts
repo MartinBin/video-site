@@ -5,6 +5,10 @@ import { ApiProperty } from "@nestjs/swagger";
 
 @Schema({ timestamps: true })
 export class Comment{
+
+    @Prop({ type: Types.ObjectId, auto: true })
+    _id: Types.ObjectId;
+
     @Prop({ required: true })
     @ApiProperty({description: 'Comment text'})
     content: string;

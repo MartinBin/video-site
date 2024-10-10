@@ -12,6 +12,7 @@ async function bootstrap() {
     prefix:'/uploads',
   });
   app.useGlobalPipes(new ValidationPipe());
+  app.setGlobalPrefix('api');
 
   const config = new DocumentBuilder()
     .setTitle("API Documentation")
@@ -23,8 +24,7 @@ async function bootstrap() {
     .build()
   const document = SwaggerModule.createDocument(app,config);
   fs.writeFileSync("./openapi.json", JSON.stringify(document,null,2));
-  SwaggerModule.setup('api',app,document);
-
+  SwaggerModule.setup('api/docs',app,document);
   await app.listen(3000);
 }
 bootstrap();

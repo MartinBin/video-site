@@ -22,4 +22,11 @@ export class VideoCommentsService {
     const video = await this.videoModel.findById(videoId).exec();
     return video?.comments || [];
   }
+
+  async findAll(): Promise<Comment[]> {
+    const videos = await this.videoModel.find().exec();
+    return videos.reduce((allComments, video) => {
+      return allComments.concat(video.comments || []);
+    }, []);
+  }
 }

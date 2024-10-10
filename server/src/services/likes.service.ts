@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { Comment, CommentDocument } from '../schemas/comment.schema';
 import { CreateLikeDto } from '../dto/create-like.dto';
 import { Video, VideoDocument } from '../schemas/video.schema';
@@ -12,16 +12,18 @@ export class LikesService {
   ) {}
 
   async likeComment(videoId: string, commentId: string, createLikeDto: CreateLikeDto): Promise<Comment> {
-    const video = await this.videoModel.findByIdAndUpdate(
-      {_id: videoId,'comments._id': commentId},
-      { $push: { 'comments.$.likes': createLikeDto } },
-      { new: true, runValidators: true }
-    ).exec();
-
+    const video=await this.videoModel.findById(videoId).exec()
     if (!video) {
-      throw new NotFoundException('Video or comment not found');
+      throw new NotFoundException('Video not found');
     }
-    return video.comments[0];
+    
+    const comment = video.comments.find(comment=> comment._id.toString() === commentId);
+  
+    if(!comment){
+      throw new NotFoundException('Comment not found');
+    }
+    comment.likes.push(createLikeDto);
+    return comment;
   }
 
   async unlikeComment(videoId: string, commentId: string, createLikeDto: CreateLikeDto): Promise<Comment> {
