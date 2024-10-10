@@ -360,6 +360,88 @@
         ]
       },
       "get": {
+        "operationId": "LikesController_getCommentLikes",
+        "summary": "Get likes of a comment",
+        "parameters": [
+          {
+            "name": "videoId",
+            "required": true,
+            "in": "path",
+            "description": "ID of the video",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "commentId",
+            "required": true,
+            "in": "path",
+            "description": "ID of the comment to get like",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved like list."
+          },
+          "404": {
+            "description": "Video or comment not found."
+          }
+        },
+        "tags": [
+          "likes"
+        ]
+      }
+    },
+    "/api/videos/{videoId}/comments/{commentId}/likes/{likeId}": {
+      "delete": {
+        "operationId": "LikesController_unlikeComment",
+        "summary": "Unlike a comment",
+        "parameters": [
+          {
+            "name": "videoId",
+            "required": true,
+            "in": "path",
+            "description": "ID of the video",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "commentId",
+            "required": true,
+            "in": "path",
+            "description": "ID of the comment to unlike",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "likeId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The comment has been successfully unliked."
+          },
+          "404": {
+            "description": "Video or comment not found or not liked by the user."
+          }
+        },
+        "tags": [
+          "likes"
+        ]
+      }
+    },
+    "/api/videos/{videoId}/comments/{commentId}/likes/count": {
+      "get": {
         "operationId": "LikesController_getCommentLikeCount",
         "summary": "Get like count for a comment",
         "parameters": [
@@ -395,10 +477,10 @@
         ]
       }
     },
-    "/api/videos/{videoId}/comments/{commentId}/likes/{likeId}": {
-      "delete": {
-        "operationId": "LikesController_unlikeComment",
-        "summary": "Unlike a comment",
+    "/api/videos/{videoId}/comments/{commentId}/likes/{userName}": {
+      "get": {
+        "operationId": "LikesController_getCommentLikesByUsername",
+        "summary": "Get like of comment by username",
         "parameters": [
           {
             "name": "videoId",
@@ -413,28 +495,27 @@
             "name": "commentId",
             "required": true,
             "in": "path",
-            "description": "ID of the comment to unlike",
+            "description": "ID of the comment",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userName",
+            "required": true,
+            "in": "path",
+            "description": "Name of the user to get like",
             "schema": {
               "type": "string"
             }
           }
         ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateLikeDto"
-              }
-            }
-          }
-        },
         "responses": {
           "200": {
-            "description": "The comment has been successfully unliked."
+            "description": "Successfully retrieved like."
           },
           "404": {
-            "description": "Video or comment not found or not liked by the user."
+            "description": "Video or comment not found."
           }
         },
         "tags": [

@@ -36,20 +36,26 @@ export class LikesService {
   }
 
   async unlikeComment(videoId: string, commentId: string,likeId: string): Promise<Comment> {
-    const video = await this.videoModel.findByIdAndUpdate(
-      {_id: videoId,'comments._id': commentId},
-      { $pull: { 'comments.$.likes': createLikeDto } },
-      { new: true }
-    ).exec();
-
+    const video = await this.videoModel.findById(videoId).exec();
     if (!video) {
-      throw new NotFoundException('Video or comment not found');
+      throw new NotFoundException('Video not found');
     }
 
-    return video.comments[0];
+    const commentIndex = video.comments.findIndex(comment => comment._id.toString() === commentId);
+    if (commentIndex === -1) {
+      throw new NotFoundException('Comment not found');
+    }
+    
+    video.comments[commentIndex].likes = video.comments[commentIndex].likes.filter(
+      like => like._id.toString() !== likeId
+    );
+    const updatedVideo = await video.save();
+    const updatedComment = updatedVideo.comments[commentIndex];
+
+    return updatedComment;
   }
 
-  async getLikesCount(videoId: string, commentId: string): Promise<number> {
+  async getLikesCount(videoId: string, commentId: string): Promise<{ likesCount: number }> {
     const video = await this.videoModel.findOne(
       {_id: videoId,'comments._id': commentId},
       {'comments.$': 1}
@@ -57,6 +63,36 @@ export class LikesService {
     if (!video || !video.comments[0]) {
       throw new NotFoundException('Video or comment not found');
     }
-    return video.comments[0].likes?.length || 0;
+    const likesCount = video.comments[0].likes?.length || 0;
+    
+    return { likesCount };
+  }
+  async getLikes(videoId: string, commentId: string): Promise<Like[]> {
+    const video = await this.videoModel.findOne(
+      {_id: videoId,'comments._id': commentId},
+      {'comments.$': 1}
+    ).exec();
+    if (!video || !video.comments[0]) {
+      throw new NotFoundException('Video or comment not found');
+    }
+    
+    return video.comments[0].likes;
+  }
+
+  async getLikesByUsername(videoId: string, commentId: string, userName: string): Promise<Like[]> {
+    const video = await this.videoModel.findOne(
+      {_id: videoId, 'comments._id': commentId},
+      {'comments.$': 1}
+    ).exec();
+    
+    if (!video || !video.comments[0]) {
+      throw new NotFoundException('Video or comment not found');
+    }
+    
+    const likes = video.comments[0].likes || [];
+    
+    const userLikes = likes.filter(like => like.userDisplayName === userName);
+    
+    return userLikes;
   }
 }

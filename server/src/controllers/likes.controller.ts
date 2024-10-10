@@ -36,7 +36,7 @@ export class LikesController {
     return this.likesService.unlikeComment(videoId, commentId,likeId);
   }
 
-  @Get()
+  @Get('count')
   @ApiOperation({ summary: 'Get like count for a comment' })
   @ApiParam({ name: 'videoId', required: true, description: 'ID of the video' })
   @ApiParam({ name: 'commentId', required: true, description: 'ID of the comment to get like count' })
@@ -47,6 +47,32 @@ export class LikesController {
     @Param('commentId') commentId: string
   ) {
     return this.likesService.getLikesCount(videoId, commentId);
+  }
+  @Get()
+  @ApiOperation({ summary: 'Get likes of a comment' })
+  @ApiParam({ name: 'videoId', required: true, description: 'ID of the video' })
+  @ApiParam({ name: 'commentId', required: true, description: 'ID of the comment to get like' })
+  @ApiResponse({ status: HttpStatus.OK, description: 'Successfully retrieved like list.' })
+  @ApiResponse({ status: HttpStatus.NOT_FOUND, description: 'Video or comment not found.' })
+  async getCommentLikes(
+    @Param('videoId') videoId: string,
+    @Param('commentId') commentId: string
+  ) {
+    return this.likesService.getLikes(videoId, commentId);
+  }
+  @Get(":userName")
+  @ApiOperation({ summary: 'Get like of comment by username' })
+  @ApiParam({ name: 'videoId', required: true, description: 'ID of the video' })
+  @ApiParam({ name: 'commentId', required: true, description: 'ID of the comment' })
+  @ApiParam({ name: 'userName', required: true, description: 'Name of the user to get like' })
+  @ApiResponse({ status: HttpStatus.OK, description: 'Successfully retrieved like.' })
+  @ApiResponse({ status: HttpStatus.NOT_FOUND, description: 'Video or comment not found.' })
+  async getCommentLikesByUsername(
+    @Param('videoId') videoId: string,
+    @Param('commentId') commentId: string,
+    @Param('userName') userName: string
+  ) {
+    return this.likesService.getLikesByUsername(videoId, commentId,userName);
   }
 
   /*@Post('video/:videoId')
