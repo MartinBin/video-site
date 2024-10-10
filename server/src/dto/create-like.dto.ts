@@ -5,8 +5,4 @@ import { Type } from 'class-transformer';
 export class CreateLikeDto {
     @IsString()
     userDisplayName: string;
-
-    @IsDate()
-    @Type(() => Date)
-    createdAt: Date;
 }

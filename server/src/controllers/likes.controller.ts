@@ -3,11 +3,11 @@ import { ApiTags, ApiOperation, ApiParam, ApiResponse, ApiBody } from '@nestjs/s
 import { LikesService } from '../services/likes.service';
 import { CreateLikeDto } from '../dto/create-like.dto';
 @ApiTags('likes')
-@Controller('likes')
+@Controller('videos/:videoId/comments/:commentId/likes')
 export class LikesController {
   constructor(private readonly likesService: LikesService) {}
 
-  @Post('video/:videoId/comment/:commentId')
+  @Post()
   @ApiOperation({ summary: 'Like a comment' })
   @ApiParam({ name: 'videoId', required: true, description: 'ID of the video' })
   @ApiParam({ name: 'commentId', required: true, description: 'ID of the comment to like' })
@@ -22,22 +22,21 @@ export class LikesController {
     return this.likesService.likeComment(videoId, commentId, likeDto);
   }
 
-  @Delete('video/:videoId/comment/:commentId')
+  @Delete(':likeId')
   @ApiOperation({ summary: 'Unlike a comment' })
   @ApiParam({ name: 'videoId', required: true, description: 'ID of the video' })
   @ApiParam({ name: 'commentId', required: true, description: 'ID of the comment to unlike' })
-  @ApiBody({ type: CreateLikeDto })
   @ApiResponse({ status: HttpStatus.OK, description: 'The comment has been successfully unliked.' })
   @ApiResponse({ status: HttpStatus.NOT_FOUND, description: 'Video or comment not found or not liked by the user.' })
   async unlikeComment( 
     @Param('videoId') videoId: string,
-    @Param('commentId') commentId: string, 
-    @Body() likeDto: CreateLikeDto
+    @Param('commentId') commentId: string,
+    @Param('likeId') likeId: string,  
   ) {
-    return this.likesService.unlikeComment(videoId, commentId, likeDto);
+    return this.likesService.unlikeComment(videoId, commentId,likeId);
   }
 
-  @Get('video/:videoId/comment/:commentId')
+  @Get()
   @ApiOperation({ summary: 'Get like count for a comment' })
   @ApiParam({ name: 'videoId', required: true, description: 'ID of the video' })
   @ApiParam({ name: 'commentId', required: true, description: 'ID of the comment to get like count' })

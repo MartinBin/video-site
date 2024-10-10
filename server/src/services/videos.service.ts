@@ -27,7 +27,12 @@ export class VideosService {
     }
 
     findOneVideo(id:string){
-        return this.videoModel.findById(id).exec();
+        const foundVideo = this.videoModel.findById(id).exec();
+        if(!foundVideo){
+            throw new NotFoundException(`Video with ID "${id}" not found`);
+        }
+
+        return foundVideo;
     }
     findAllVideos(){
         return this.videoModel.find().exec();

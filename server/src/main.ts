@@ -15,8 +15,8 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
 
   const config = new DocumentBuilder()
-    .setTitle("API Documentation")
-    .setDescription('The API description')
+    .setTitle("Video sharing site")
+    .setDescription('The API description of video sharing site')
     .setVersion('1.0')
     .addTag('likes')
     .addTag('comments')

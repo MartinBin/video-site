@@ -1,32 +1,41 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import mongoose, { Model, Types } from 'mongoose';
 import { Comment, CommentDocument } from '../schemas/comment.schema';
 import { CreateLikeDto } from '../dto/create-like.dto';
 import { Video, VideoDocument } from '../schemas/video.schema';
+import { Like,LikeDocument, LikeSchema } from '../schemas/like.schema'; // Assuming Like schema is defined
 
 @Injectable()
 export class LikesService {
   constructor(
-    @InjectModel(Comment.name) private videoModel: Model<VideoDocument>
+    @InjectModel(Video.name) private videoModel: Model<VideoDocument>,
   ) {}
 
   async likeComment(videoId: string, commentId: string, createLikeDto: CreateLikeDto): Promise<Comment> {
-    const video=await this.videoModel.findById(videoId).exec()
+    const video = await this.videoModel.findById(videoId).exec();
     if (!video) {
       throw new NotFoundException('Video not found');
     }
     
-    const comment = video.comments.find(comment=> comment._id.toString() === commentId);
-  
-    if(!comment){
+    const commentIndex = video.comments.findIndex(comment => comment._id.toString() === commentId);
+    if (commentIndex === -1) {
       throw new NotFoundException('Comment not found');
     }
-    comment.likes.push(createLikeDto);
-    return comment;
+    
+    const newLike = {
+      userDisplayName: createLikeDto.userDisplayName,
+      createdAt: new Date()
+    };
+    
+    video.comments[commentIndex].likes.push(newLike as any);
+    const updatedVideo = await video.save();
+    const updatedComment = updatedVideo.comments[commentIndex];
+
+    return updatedComment;
   }
 
-  async unlikeComment(videoId: string, commentId: string, createLikeDto: CreateLikeDto): Promise<Comment> {
+  async unlikeComment(videoId: string, commentId: string,likeId: string): Promise<Comment> {
     const video = await this.videoModel.findByIdAndUpdate(
       {_id: videoId,'comments._id': commentId},
       { $pull: { 'comments.$.likes': createLikeDto } },

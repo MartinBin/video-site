@@ -4,10 +4,7 @@ import { Like, LikeSchema } from './like.schema';
 import { ApiProperty } from "@nestjs/swagger";
 
 @Schema({ timestamps: true })
-export class Comment{
-
-    @Prop({ type: Types.ObjectId, auto: true })
-    _id: Types.ObjectId;
+export class Comment extends Document{
 
     @Prop({ required: true })
     @ApiProperty({description: 'Comment text'})
@@ -27,10 +24,6 @@ export class Comment{
     @Prop({ type: String, required: false })
     @ApiProperty({description: 'Users username of who created the comment'})
     userDisplayName: string;
-
-    @Prop({ type: Date, default: Date.now })
-    @ApiProperty({description: 'Date when the comment was created'})
-    createdAt: Date;
 }
 export type CommentDocument = Comment & Document;
 export const CommentSchema = SchemaFactory.createForClass(Comment);
