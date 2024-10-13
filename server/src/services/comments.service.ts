@@ -60,7 +60,7 @@ export class VideoCommentsService {
     ).exec();
 
     if (!video) {
-      throw new NotFoundException('Video not found');
+      throw new NotFoundException('Video or comment not found');
     }
 
     return video;

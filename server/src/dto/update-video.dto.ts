@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsOptional } from 'class-validator';
+import { Exclude } from 'class-transformer';
 
 export class UpdateVideoDto {
     @ApiProperty({
@@ -19,4 +20,7 @@ export class UpdateVideoDto {
     @IsString()
     @IsOptional()
     description?: string;
+
+    @Exclude()
+    extraProperty:any;
 }

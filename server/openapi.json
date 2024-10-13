@@ -97,6 +97,9 @@
           "200": {
             "description": "The video has been successfully updated."
           },
+          "400": {
+            "description": "Bad request."
+          },
           "404": {
             "description": "Video not found."
           }
@@ -582,7 +585,34 @@
       },
       "CreateCommentDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "The content of the comment",
+            "example": "This is a great video!"
+          },
+          "userDisplayName": {
+            "type": "string",
+            "description": "The display name of the user who posted the comment",
+            "example": "John Doe"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "The date and time when the comment was created",
+            "example": "2023-04-21T12:00:00Z"
+          },
+          "video": {
+            "type": "object",
+            "description": "The ID of the video this comment belongs to",
+            "example": "507f1f77bcf86cd799439011"
+          }
+        },
+        "required": [
+          "content",
+          "createdAt",
+          "video"
+        ]
       },
       "UpdateCommentDto": {
         "type": "object",
@@ -596,7 +626,16 @@
       },
       "CreateLikeDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "userDisplayName": {
+            "type": "string",
+            "description": "The display name of the user who is creating the like",
+            "example": "John Doe"
+          }
+        },
+        "required": [
+          "userDisplayName"
+        ]
       }
     }
   }

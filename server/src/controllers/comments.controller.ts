@@ -59,7 +59,7 @@ export class VideoCommentsController {
       if (error instanceof NotFoundException) {
         throw error;
       }
-      throw new NotFoundException('Video not found');
+      throw new NotFoundException('Video or comment not found');
     }
   }
 

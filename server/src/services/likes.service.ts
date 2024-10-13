@@ -35,7 +35,7 @@ export class LikesService {
     return updatedComment;
   }
 
-  async unlikeComment(videoId: string, commentId: string,likeId: string): Promise<Comment> {
+  async unlikeComment(videoId: string, commentId: string, likeId: string): Promise<Comment> {
     const video = await this.videoModel.findById(videoId).exec();
     if (!video) {
       throw new NotFoundException('Video not found');
@@ -46,9 +46,15 @@ export class LikesService {
       throw new NotFoundException('Comment not found');
     }
     
-    video.comments[commentIndex].likes = video.comments[commentIndex].likes.filter(
-      like => like._id.toString() !== likeId
-    );
+    const comment = video.comments[commentIndex];
+    const likeIndex = comment.likes.findIndex(like => like._id.toString() === likeId);
+    if (likeIndex === -1) {
+      throw new NotFoundException('Like not found for this comment');
+    }
+
+    // Remove the like from the comment
+    comment.likes.splice(likeIndex, 1);
+
     const updatedVideo = await video.save();
     const updatedComment = updatedVideo.comments[commentIndex];
 
@@ -92,6 +98,10 @@ export class LikesService {
     const likes = video.comments[0].likes || [];
     
     const userLikes = likes.filter(like => like.userDisplayName === userName);
+    
+    if (userLikes.length === 0) {
+      throw new NotFoundException(`No likes found for user: ${userName}`);
+    }
     
     return userLikes;
   }

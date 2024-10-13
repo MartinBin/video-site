@@ -26,8 +26,8 @@ export class VideosService {
         return newVideo.save();
     }
 
-    findOneVideo(id:string){
-        const foundVideo = this.videoModel.findById(id).exec();
+    async findOneVideo(id:string){
+        const foundVideo = await this.videoModel.findById(id).exec();
         if(!foundVideo){
             throw new NotFoundException(`Video with ID "${id}" not found`);
         }

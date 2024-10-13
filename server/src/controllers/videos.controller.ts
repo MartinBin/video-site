@@ -1,9 +1,10 @@
-import { Controller, Post, Get, Body, Param, UploadedFile, UseInterceptors, BadRequestException, Patch, Delete } from '@nestjs/common';
+import { Controller, Post, Get, Body, Param, UploadedFile, UseInterceptors, BadRequestException, Patch, Delete, UsePipes } from '@nestjs/common';
 import { VideosService } from '../services/videos.service';
 import { ApiBody, ApiConsumes, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateVideoDto } from '../dto/create-video.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UpdateVideoDto } from 'src/dto/update-video.dto';
+import { StrictValidationPipe } from '../pipes/strict-validation.pipe';
 
 @ApiTags('videos')
 @Controller('videos')
@@ -21,6 +22,12 @@ export class VideosController {
     if (!file) {
       throw new BadRequestException('File is required');
     }
+
+    const allowedMimeTypes = ['video/mp4', 'video/mpeg', 'video/quicktime', 'video/x-msvideo'];
+    if (!allowedMimeTypes.includes(file.mimetype)) {
+      throw new BadRequestException('Invalid file type. Only video files are allowed.');
+    }
+
     return this.videosService.createVideo(createVideoDto,file);
   }
 
@@ -46,6 +53,8 @@ export class VideosController {
   @ApiBody({ type: UpdateVideoDto })
   @ApiResponse({ status: 200, description: 'The video has been successfully updated.' })
   @ApiResponse({ status: 404, description: 'Video not found.' })
+  @ApiResponse({ status: 400, description: 'Bad request.' })
+  @UsePipes(new StrictValidationPipe())
   async updateVideo(@Param('id') id: string, @Body() updateVideo: UpdateVideoDto) {
     return this.videosService.updateVideo(id, updateVideo);
   }
