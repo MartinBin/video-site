@@ -4,6 +4,7 @@ import { ApiBody, ApiConsumes, ApiOperation, ApiParam, ApiResponse, ApiTags } fr
 import { CreateVideoDto } from '../dto/create-video.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UpdateVideoDto } from 'src/dto/update-video.dto';
+import { Types } from 'mongoose';
 import { StrictValidationPipe } from '../pipes/strict-validation.pipe';
 
 @ApiTags('videos')
@@ -36,7 +37,11 @@ export class VideosController {
   @ApiParam({ name: 'id', description: 'Video ID' })
   @ApiResponse({ status: 200, description: 'The video has been successfully retrieved.' })
   @ApiResponse({ status: 404, description: 'Video not found.' })
+  @ApiResponse({ status: 400, description: 'Invalid ID format.' })
   async findVideo(@Param('id') id: string) {
+    if (!Types.ObjectId.isValid(id)) {
+      throw new BadRequestException('Invalid ID format');
+    }
     return this.videosService.findOneVideo(id);
   }
 
@@ -56,6 +61,9 @@ export class VideosController {
   @ApiResponse({ status: 400, description: 'Bad request.' })
   @UsePipes(new StrictValidationPipe())
   async updateVideo(@Param('id') id: string, @Body() updateVideo: UpdateVideoDto) {
+    if (!Types.ObjectId.isValid(id)) {
+      throw new BadRequestException('Invalid ID format');
+    }
     return this.videosService.updateVideo(id, updateVideo);
   }
 
@@ -64,7 +72,11 @@ export class VideosController {
   @ApiParam({ name: 'id', description: 'Video ID' })
   @ApiResponse({ status: 200, description: 'The video has been successfully deleted.' })
   @ApiResponse({ status: 404, description: 'Video not found.' })
+  @ApiResponse({ status: 400, description: 'Invalid ID format.' })
   async deleteVideo(@Param('id') id: string) {
+    if (!Types.ObjectId.isValid(id)) {
+      throw new BadRequestException('Invalid ID format');
+    }
     return this.videosService.deleteVideo(id);
   }
 }

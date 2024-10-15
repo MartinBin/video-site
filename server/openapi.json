@@ -61,6 +61,9 @@
           "200": {
             "description": "The video has been successfully retrieved."
           },
+          "400": {
+            "description": "Invalid ID format."
+          },
           "404": {
             "description": "Video not found."
           }
@@ -125,6 +128,9 @@
         "responses": {
           "200": {
             "description": "The video has been successfully deleted."
+          },
+          "400": {
+            "description": "Invalid ID format."
           },
           "404": {
             "description": "Video not found."
@@ -192,6 +198,9 @@
         "responses": {
           "200": {
             "description": "The comment has been successfully updated."
+          },
+          "400": {
+            "description": "Invalid ID format."
           }
         },
         "tags": [
@@ -237,6 +246,9 @@
           "200": {
             "description": "The comment has been successfully updated."
           },
+          "400": {
+            "description": "Invalid ID format."
+          },
           "404": {
             "description": "Video or comment not found."
           }
@@ -272,6 +284,9 @@
           "200": {
             "description": "The comment has been successfully deleted."
           },
+          "400": {
+            "description": "Invalid ID format."
+          },
           "404": {
             "description": "Video or comment not found."
           }
@@ -306,6 +321,9 @@
         "responses": {
           "200": {
             "description": "The comment has been successfully retrieved."
+          },
+          "400": {
+            "description": "Invalid ID format."
           },
           "404": {
             "description": "Video or comment not found."
@@ -354,6 +372,9 @@
           "201": {
             "description": "The comment has been successfully liked."
           },
+          "400": {
+            "description": "Invalid ID format."
+          },
           "404": {
             "description": "Video or comment not found."
           }
@@ -388,6 +409,9 @@
         "responses": {
           "200": {
             "description": "Successfully retrieved like list."
+          },
+          "400": {
+            "description": "Invalid ID format."
           },
           "404": {
             "description": "Video or comment not found."
@@ -434,6 +458,9 @@
           "200": {
             "description": "The comment has been successfully unliked."
           },
+          "400": {
+            "description": "Invalid ID format."
+          },
           "404": {
             "description": "Video or comment not found or not liked by the user."
           }
@@ -470,6 +497,9 @@
         "responses": {
           "200": {
             "description": "Successfully retrieved like count."
+          },
+          "400": {
+            "description": "Invalid ID format."
           },
           "404": {
             "description": "Video or comment not found."
@@ -516,6 +546,9 @@
         "responses": {
           "200": {
             "description": "Successfully retrieved like."
+          },
+          "400": {
+            "description": "Invalid ID format."
           },
           "404": {
             "description": "Video or comment not found."
