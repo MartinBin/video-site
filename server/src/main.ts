@@ -14,6 +14,12 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
   app.setGlobalPrefix('api');
 
+  app.enableCors({
+    origin: 'http://localhost:5173',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+  });
+
   const config = new DocumentBuilder()
     .setTitle("Video sharing site")
     .setDescription('The API description of video sharing site')
