@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Types } from 'mongoose';
 import { Comment, CommentSchema } from './comment.schema';
+import { User } from './user.schema';
 
 @Schema()
 export class Video extends Document{
@@ -13,6 +14,9 @@ export class Video extends Document{
 
     @Prop({ required:true})
     url: string;
+
+    @Prop({ type: Types.ObjectId, ref: User.name, required: true })
+    userId: string;
 
     @Prop({ type: [CommentSchema], default: [] })
     comments: Comment[];

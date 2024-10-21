@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Body, Param, UploadedFile, UseInterceptors, BadRequestException, Patch, Delete, UsePipes } from '@nestjs/common';
+import { Controller, Post, Get, Body, Param, UploadedFile, UseInterceptors, BadRequestException, Patch, Delete, UsePipes, UseGuards, Req, Request } from '@nestjs/common';
 import { VideosService } from '../services/videos.service';
 import { ApiBody, ApiConsumes, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateVideoDto } from '../dto/create-video.dto';
@@ -6,6 +6,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { UpdateVideoDto } from 'src/dto/update-video.dto';
 import { Types } from 'mongoose';
 import { StrictValidationPipe } from '../pipes/strict-validation.pipe';
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('videos')
 @Controller('videos')
@@ -14,12 +15,13 @@ export class VideosController {
 
   @Post()
   @UseInterceptors(FileInterceptor('file'))
+  @UseGuards(AuthGuard('jwt'))
   @ApiOperation({summary: 'Create Video'})
   @ApiConsumes('multipart/form-data')
   @ApiBody({type:CreateVideoDto})
   @ApiResponse({ status: 201, description: 'The video has been successfully created.' })
   @ApiResponse({ status: 400, description: 'Bad request.' })
-  async createVideo(@Body() createVideoDto: CreateVideoDto, @UploadedFile() file: Express.Multer.File) {
+  async createVideo(@Body() createVideoDto: CreateVideoDto, @UploadedFile() file: Express.Multer.File, @Request() req) {
     if (!file) {
       throw new BadRequestException('File is required');
     }
@@ -28,8 +30,8 @@ export class VideosController {
     if (!allowedMimeTypes.includes(file.mimetype)) {
       throw new BadRequestException('Invalid file type. Only video files are allowed.');
     }
-
-    return this.videosService.createVideo(createVideoDto,file);
+    const userId = req.user._id;
+    return this.videosService.createVideo(createVideoDto,file, userId);
   }
 
   @Get(':id')

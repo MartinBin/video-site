@@ -10,7 +10,7 @@ import { UpdateVideoDto } from 'src/dto/update-video.dto';
 @Injectable()
 export class VideosService {
     constructor(@InjectModel(Video.name) private videoModel: Model<Video>) {}
-    createVideo(createVideoDto: CreateVideoDto, file: Express.Multer.File): Promise<Video>{
+    createVideo(createVideoDto: CreateVideoDto, file: Express.Multer.File, userId: string): Promise<Video>{
         const fileName=`${Date.now()}+${file.originalname}`;
         const filePath=path.join(__dirname, '..','..','uploads',fileName);
 
@@ -21,6 +21,7 @@ export class VideosService {
 
         const newVideo = new this.videoModel({
             ...createVideoDto,
+            userId,
             url:`/uploads/${fileName}`,
         });
         return newVideo.save();
