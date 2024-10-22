@@ -559,10 +559,10 @@
         ]
       }
     },
-    "/api/users": {
+    "/api/auth/register": {
       "post": {
-        "operationId": "UsersController_createUser",
-        "summary": "Create user",
+        "operationId": "AuthController_register",
+        "summary": "Register a new user",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -576,17 +576,18 @@
         },
         "responses": {
           "201": {
-            "description": ""
+            "description": "User successfully registered."
+          },
+          "400": {
+            "description": "Bad request."
           }
-        },
-        "tags": [
-          "users"
-        ]
+        }
       }
     },
-    "/api/users/login": {
+    "/api/auth/login": {
       "post": {
-        "operationId": "UsersController_login",
+        "operationId": "AuthController_login",
+        "summary": "Login a user",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -599,13 +600,13 @@
           }
         },
         "responses": {
-          "201": {
-            "description": ""
+          "200": {
+            "description": "User successfully logged in."
+          },
+          "400": {
+            "description": "Invalid credentials."
           }
-        },
-        "tags": [
-          "users"
-        ]
+        }
       }
     }
   },

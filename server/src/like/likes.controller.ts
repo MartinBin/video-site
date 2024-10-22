@@ -1,7 +1,7 @@
 import { Controller, Post, Delete, Param, Body, Get, HttpStatus, BadRequestException } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiParam, ApiResponse, ApiBody } from '@nestjs/swagger';
-import { LikesService } from '../services/likes.service';
-import { CreateLikeDto } from '../dto/create-like.dto';
+import { LikesService } from './likes.service';
+import { CreateLikeDto } from './dto/create-like.dto';
 import { Types } from 'mongoose';
 @ApiTags('likes')
 @Controller('videos/:videoId/comments/:commentId/likes')

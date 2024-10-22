@@ -1,9 +1,9 @@
 import { Controller, Post, Get, Body, Param, UploadedFile, UseInterceptors, BadRequestException, Patch, Delete, UsePipes, UseGuards, Req, Request } from '@nestjs/common';
-import { VideosService } from '../services/videos.service';
+import { VideosService } from './videos.service';
 import { ApiBody, ApiConsumes, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { CreateVideoDto } from '../dto/create-video.dto';
+import { CreateVideoDto } from './dto/create-video.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { UpdateVideoDto } from 'src/dto/update-video.dto';
+import { UpdateVideoDto } from 'src/video/dto/update-video.dto';
 import { Types } from 'mongoose';
 import { StrictValidationPipe } from '../pipes/strict-validation.pipe';
 import { AuthGuard } from '@nestjs/passport';
@@ -25,7 +25,7 @@ export class VideosController {
     if (!file) {
       throw new BadRequestException('File is required');
     }
-
+    
     const allowedMimeTypes = ['video/mp4', 'video/mpeg', 'video/quicktime', 'video/x-msvideo'];
     if (!allowedMimeTypes.includes(file.mimetype)) {
       throw new BadRequestException('Invalid file type. Only video files are allowed.');

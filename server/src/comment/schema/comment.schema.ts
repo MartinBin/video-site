@@ -1,8 +1,8 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Types } from 'mongoose';
-import { Like, LikeSchema } from './like.schema';
+import { Like, LikeSchema } from '../../like/schema/like.schema';
 import { ApiProperty } from "@nestjs/swagger";
-import { User } from './user.schema';
+import { User } from '../../user/schema/user.schema';
 
 @Schema({ timestamps: true })
 export class Comment extends Document{

@@ -1,15 +1,17 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { CreateVideoDto } from 'src/dto/create-video.dto';
-import { Video } from 'src/schemas/video.schema';
+import { CreateVideoDto } from 'src/video/dto/create-video.dto';
+import { Video } from './schema/video.schema';
 import * as fs from 'fs';
 import * as path from 'path';
-import { UpdateVideoDto } from 'src/dto/update-video.dto';
+import { UpdateVideoDto } from 'src/video/dto/update-video.dto';
+import { UsersService } from 'src/user/users.service';
 
 @Injectable()
 export class VideosService {
-    constructor(@InjectModel(Video.name) private videoModel: Model<Video>) {}
+    constructor(@InjectModel(Video.name) private videoModel: Model<Video>,
+    private usersService: UsersService) {}
     createVideo(createVideoDto: CreateVideoDto, file: Express.Multer.File, userId: string): Promise<Video>{
         const fileName=`${Date.now()}+${file.originalname}`;
         const filePath=path.join(__dirname, '..','..','uploads',fileName);
@@ -18,10 +20,9 @@ export class VideosService {
             fs.mkdirSync(path.dirname(filePath),{recursive:true});
         }
         fs.writeFileSync(filePath,file.buffer);
-
         const newVideo = new this.videoModel({
             ...createVideoDto,
-            userId,
+            userId: userId,
             url:`/uploads/${fileName}`,
         });
         return newVideo.save();
@@ -32,8 +33,8 @@ export class VideosService {
         if(!foundVideo){
             throw new NotFoundException(`Video with ID "${id}" not found`);
         }
-
-        return foundVideo;
+        const user = await this.usersService.findById(foundVideo.userId)
+        return {foundVideo, userName: user.username};
     }
     findAllVideos(){
         return this.videoModel.find().exec();

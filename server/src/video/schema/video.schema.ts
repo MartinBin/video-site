@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Types } from 'mongoose';
-import { Comment, CommentSchema } from './comment.schema';
-import { User } from './user.schema';
+import { Comment, CommentSchema } from '../../comment/schema/comment.schema';
+import { User } from '../../user/schema/user.schema';
 
 @Schema()
 export class Video extends Document{

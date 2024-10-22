@@ -1,10 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Video, VideoDocument } from '../schemas/video.schema';
-import { CreateCommentDto } from '../dto/create-comment.dto';
-import { Comment } from '../schemas/comment.schema';
-import { UpdateCommentDto } from 'src/dto/update-comment.dto';
+import { Video, VideoDocument } from '../video/schema/video.schema';
+import { CreateCommentDto } from './dto/create-comment.dto';
+import { Comment } from './schema/comment.schema';
+import { UpdateCommentDto } from 'src/comment/dto/update-comment.dto';
 
 @Injectable()
 export class VideoCommentsService {
@@ -13,7 +13,7 @@ export class VideoCommentsService {
 
   async addComment(videoId: string, createCommentDto: CreateCommentDto): Promise<Video> {
     const createdComment = await this.videoModel.findByIdAndUpdate(
-      videoId,
+      {_id: videoId},
       { $push: { comments: createCommentDto } },
       { new: true, runValidators: true }
     ).exec();

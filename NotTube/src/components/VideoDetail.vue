@@ -7,6 +7,7 @@
         class="w-full h-auto rounded-lg shadow-lg mb-4"
         style="object-fit: cover;"
         ></video>
+        <h1 class="text-2xl font-bold mb-2 text-black">{{ username }}</h1>
         <h1 class="text-2xl font-bold mb-2 text-black">{{ video.title }}</h1>
         <!---<div class="flex items-center space-x-4">
             <button class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">Like</button>
@@ -41,6 +42,7 @@
   
   const route = useRoute();
   const video = ref({ title: '', description: '', url: '' });
+  const username=ref('')
 
   const comments = ref([]);
     const newComment = ref('');
@@ -49,8 +51,9 @@
     const videoId = route.params.id;
     try {
         const response = await axios.get(`http://localhost:3000/api/videos/${videoId}`);
-        video.value = response.data;
-        comments.value = response.data.comments || [];
+        video.value = response.data.foundVideo;
+        username.value=response.data.userName;
+        comments.value = response.data.foundVideo.comments || [];
 
         await Promise.all(comments.value.map(async (comment) => {
             const likeResponse = await axios.get(`http://localhost:3000/api/videos/${videoId}/comments/${comment._id}/likes/count`);

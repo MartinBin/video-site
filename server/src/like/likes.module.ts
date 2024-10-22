@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { LikesController } from '../controllers/likes.controller';
-import { LikesService } from '../services/likes.service';
-import { Comment, CommentSchema } from '../schemas/comment.schema';
-import { Like, LikeSchema } from '../schemas/like.schema';
-import { Video, VideoSchema } from '../schemas/video.schema';
+import { LikesController } from './likes.controller';
+import { LikesService } from './likes.service';
+import { Comment, CommentSchema } from '../comment/schema/comment.schema';
+import { Like, LikeSchema } from './schema/like.schema';
+import { Video, VideoSchema } from '../video/schema/video.schema';
 @Module({
   imports: [
     MongooseModule.forFeature([

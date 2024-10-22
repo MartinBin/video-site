@@ -1,8 +1,8 @@
 import { Controller, Post, Get, Body, Param, Patch, Delete, NotFoundException, BadRequestException } from '@nestjs/common';
-import { VideoCommentsService } from '../services/comments.service';
-import { CreateCommentDto } from '../dto/create-comment.dto';
+import { VideoCommentsService } from './comments.service';
+import { CreateCommentDto } from './dto/create-comment.dto';
 import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { UpdateCommentDto } from 'src/dto/update-comment.dto';
+import { UpdateCommentDto } from 'src/comment/dto/update-comment.dto';
 import { Types } from 'mongoose';
 
 @ApiTags('comments')

@@ -1,10 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model, Types } from 'mongoose';
-import { Comment, CommentDocument } from '../schemas/comment.schema';
-import { CreateLikeDto } from '../dto/create-like.dto';
-import { Video, VideoDocument } from '../schemas/video.schema';
-import { Like,LikeDocument, LikeSchema } from '../schemas/like.schema'; // Assuming Like schema is defined
+import { Comment, CommentDocument } from '../comment/schema/comment.schema';
+import { CreateLikeDto } from './dto/create-like.dto';
+import { Video, VideoDocument } from '../video/schema/video.schema';
+import { Like,LikeDocument, LikeSchema } from './schema/like.schema'; // Assuming Like schema is defined
 
 @Injectable()
 export class LikesService {

@@ -1,9 +1,9 @@
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
-import { VideoCommentsController } from "src/controllers/comments.controller";
-import { VideoCommentsService } from "src/services/comments.service";
-import { Comment, CommentSchema } from "src/schemas/comment.schema";
-import { Video, VideoSchema } from "src/schemas/video.schema";
+import { VideoCommentsController } from "./comments.controller";
+import { VideoCommentsService } from "src/comment/comments.service";
+import { Comment, CommentSchema } from "./schema/comment.schema";
+import { Video, VideoSchema } from "src/video/schema/video.schema";
 
 @Module({imports:[
     MongooseModule.forFeature([{

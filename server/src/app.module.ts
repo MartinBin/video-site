@@ -1,14 +1,14 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { VideoModule } from './modules/videos.module';
-import { CommentModule } from './modules/comments.module';
+import { VideoModule } from './video/videos.module';
+import { CommentModule } from './comment/comments.module';
 import { MulterModule } from '@nestjs/platform-express';
-import { LikesModule } from './modules/likes.module';
-import { UsersModule} from './modules/users.module';
-import { AuthModule } from './modules/auth.module';
+import { LikesModule } from './like/likes.module';
+import { UsersModule} from './user/users.module';
 import { JwtModule } from '@nestjs/jwt';
 import * as dotenv from 'dotenv';
 import { PassportModule } from '@nestjs/passport';
+import { AuthModule } from './auth/auth.module';
 
 dotenv.config();
 
