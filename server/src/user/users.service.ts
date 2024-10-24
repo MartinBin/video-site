@@ -19,7 +19,8 @@ export class UsersService{
 
     async createUser(createUserDto: CreateUserDto){
         const newUser = new this.userModel({
-            ...createUserDto
+            ...createUserDto,
+            roles: createUserDto.roles || ['user'],
         });
         return await newUser.save();
     }

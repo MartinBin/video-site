@@ -7,9 +7,12 @@ import { UpdateVideoDto } from 'src/video/dto/update-video.dto';
 import { Types } from 'mongoose';
 import { StrictValidationPipe } from '../pipes/strict-validation.pipe';
 import { AuthGuard } from '@nestjs/passport';
+import { RolesGuard } from 'src/roles/roles.guard';
+import { Roles } from 'src/roles/roles.decorator';
 
 @ApiTags('videos')
 @Controller('videos')
+@UseGuards(RolesGuard)
 export class VideosController {
   constructor(private readonly videosService: VideosService) {}
 
@@ -21,6 +24,7 @@ export class VideosController {
   @ApiBody({type:CreateVideoDto})
   @ApiResponse({ status: 201, description: 'The video has been successfully created.' })
   @ApiResponse({ status: 400, description: 'Bad request.' })
+  @Roles('user','admin')
   async createVideo(@Body() createVideoDto: CreateVideoDto, @UploadedFile() file: Express.Multer.File, @Request() req) {
     if (!file) {
       throw new BadRequestException('File is required');
