@@ -50,13 +50,13 @@
     onMounted(async () => {
     const videoId = route.params.id;
     try {
-        const response = await axios.get(`http://localhost:3000/api/videos/${videoId}`);
+        const response = await axios.get(`videos/${videoId}`);
         video.value = response.data.foundVideo;
         username.value=response.data.userName;
         comments.value = response.data.foundVideo.comments || [];
 
         await Promise.all(comments.value.map(async (comment) => {
-            const likeResponse = await axios.get(`http://localhost:3000/api/videos/${videoId}/comments/${comment._id}/likes/count`);
+            const likeResponse = await axios.get(`videos/${videoId}/comments/${comment._id}/likes/count`);
             comment.likesCount = likeResponse.data.likesCount;
         }));
     } catch (error) {

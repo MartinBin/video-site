@@ -24,7 +24,7 @@
     };
 
     onMounted(() => {
-        axios.get('http://localhost:3000/api/videos')
+        axios.get('videos')
             .then(response => {
                 items.value = response.data;
                 loading.value = false;

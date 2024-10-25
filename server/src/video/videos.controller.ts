@@ -12,13 +12,12 @@ import { Roles } from 'src/roles/roles.decorator';
 
 @ApiTags('videos')
 @Controller('videos')
-@UseGuards(RolesGuard)
 export class VideosController {
   constructor(private readonly videosService: VideosService) {}
 
   @Post()
   @UseInterceptors(FileInterceptor('file'))
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @ApiOperation({summary: 'Create Video'})
   @ApiConsumes('multipart/form-data')
   @ApiBody({type:CreateVideoDto})

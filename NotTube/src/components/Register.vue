@@ -1,3 +1,38 @@
+<script lang="ts">
+  import router from '@/router';
+import axios from 'axios';
+  import { defineComponent } from 'vue';
+
+  export default defineComponent({
+    data() {
+      return {
+        username: '',
+        email: '',
+        password: '',
+      };
+    },
+    async register() {
+
+      if(this.password !==(this.$refs.confirmPassword as HTMLInputElement).value){
+        console.error('Passwords do not match');
+        return;
+      }
+      try {
+        const response = await axios.post('auth/register', {
+          username: this.username,
+          email: this.email,
+          password: this.password,
+        });
+        
+        router.push('/login');
+      } catch (error) {
+        console.error('Error during registration:', error);
+      }
+    },
+  });
+</script>
+
+
 <template>
     <div class="flex flex-col items-center justify-center min-h-screen px-6 py-12 lg:px-8">
       <div class="w-full max-w-md space-y-8">
@@ -9,7 +44,7 @@
         <!-- Form -->
         <div class="sm:mx-auto sm:w-full sm:max-w-sm">
           <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">Create your account</h2>
-          <form class="space-y-6 mt-8" action="#" method="POST">
+          <form class="space-y-6 mt-8" @submit.prevent="register" action="#" method="POST">
             <div>
               <label for="username" class="block text-sm font-medium leading-6 text-gray-900">User name</label>
               <div class="mt-2">
@@ -34,7 +69,7 @@
             <div>
               <label for="confirm-password" class="block text-sm font-medium leading-6 text-gray-900">Confirm your password</label>
               <div class="mt-2">
-                <input id="confirm-password" name="confirm-password" type="password" autocomplete="current-password" required class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                <input id="confirm-password" name="confirm-password" ref="confirmPassword" type="password" autocomplete="current-password" required class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
               </div>
             </div>
   
