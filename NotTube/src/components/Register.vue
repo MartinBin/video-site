@@ -11,6 +11,7 @@ import axios from 'axios';
         password: '',
       };
     },
+    methods:{
     async register() {
 
       if(this.password !==(this.$refs.confirmPassword as HTMLInputElement).value){
@@ -29,6 +30,7 @@ import axios from 'axios';
         console.error('Error during registration:', error);
       }
     },
+  },
   });
 </script>
 
