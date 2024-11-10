@@ -684,17 +684,11 @@
             "type": "string",
             "description": "The date and time when the comment was created",
             "example": "2023-04-21T12:00:00Z"
-          },
-          "video": {
-            "type": "object",
-            "description": "The ID of the video this comment belongs to",
-            "example": "507f1f77bcf86cd799439011"
           }
         },
         "required": [
           "content",
-          "createdAt",
-          "video"
+          "createdAt"
         ]
       },
       "UpdateCommentDto": {

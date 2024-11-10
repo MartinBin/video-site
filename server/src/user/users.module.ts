@@ -8,10 +8,11 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 @Module({
-    imports: [MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]), // Provide UserModel
-    ],
-    providers: [UsersService],
-    controllers: [UsersController],
-    exports: [UsersService], // Export UsersService to be used in other modules
+  imports: [
+    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]), // Provide UserModel
+  ],
+  providers: [UsersService],
+  controllers: [UsersController],
+  exports: [UsersService], // Export UsersService to be used in other modules
 })
 export class UsersModule {}

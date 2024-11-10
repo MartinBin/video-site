@@ -1,4 +1,9 @@
-import { PipeTransform, Injectable, ArgumentMetadata, BadRequestException } from '@nestjs/common';
+import {
+  PipeTransform,
+  Injectable,
+  ArgumentMetadata,
+  BadRequestException,
+} from '@nestjs/common';
 import { validate } from 'class-validator';
 import { plainToInstance } from 'class-transformer';
 
@@ -9,7 +14,10 @@ export class StrictValidationPipe implements PipeTransform<any> {
       return value;
     }
     const object = plainToInstance(metatype, value);
-    const errors = await validate(object, { whitelist: true, forbidNonWhitelisted: true });
+    const errors = await validate(object, {
+      whitelist: true,
+      forbidNonWhitelisted: true,
+    });
     if (errors.length > 0) {
       throw new BadRequestException('Validation failed');
     }

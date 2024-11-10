@@ -8,18 +8,19 @@ import { Video, VideoSchema } from '../video/schema/video.schema';
 @Module({
   imports: [
     MongooseModule.forFeature([
-      { 
+      {
         name: Comment.name,
-        schema: CommentSchema
+        schema: CommentSchema,
       },
       {
         name: Like.name,
-        schema: LikeSchema
+        schema: LikeSchema,
       },
-      { 
+      {
         name: Video.name,
-        schema: VideoSchema
-      }]),
+        schema: VideoSchema,
+      },
+    ]),
   ],
   controllers: [LikesController],
   providers: [LikesService],

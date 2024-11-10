@@ -4,33 +4,26 @@ import { Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateCommentDto {
-    @ApiProperty({
-        description: 'The content of the comment',
-        example: 'This is a great video!'
-    })
-    @IsString()
-    content: string;
+  @ApiProperty({
+    description: 'The content of the comment',
+    example: 'This is a great video!',
+  })
+  @IsString()
+  content: string;
 
-    @ApiPropertyOptional({
-        description: 'The display name of the user who posted the comment',
-        example: 'John Doe'
-    })
-    @IsOptional()
-    @IsString()
-    userDisplayName?: string;
+  @ApiPropertyOptional({
+    description: 'The display name of the user who posted the comment',
+    example: 'John Doe',
+  })
+  @IsOptional()
+  @IsString()
+  userDisplayName?: string;
 
-    @ApiProperty({
-        description: 'The date and time when the comment was created',
-        example: '2023-04-21T12:00:00Z'
-    })
-    @IsDate()
-    @Type(() => Date)
-    createdAt: Date;
-
-    @ApiProperty({
-        description: 'The ID of the video this comment belongs to',
-        example: '507f1f77bcf86cd799439011'
-    })
-    @IsString()
-    video: Types.ObjectId | string;
+  @ApiProperty({
+    description: 'The date and time when the comment was created',
+    example: '2023-04-21T12:00:00Z',
+  })
+  @IsDate()
+  @Type(() => Date)
+  createdAt: Date;
 }

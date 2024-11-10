@@ -7,31 +7,39 @@ import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
-    constructor(
-        private readonly usersService: UsersService,
-        private readonly jwtService: JwtService,
-    ) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly jwtService: JwtService,
+  ) {}
 
-    async createUser(createUserDto: CreateUserDto) {
-        const user = await this.usersService.findOneByUsername(createUserDto.username);
-        if (user) {
-            throw new BadRequestException('Username is already taken');
-        }
-
-        const email = await this.usersService.findOneByEmail(createUserDto.email);
-        if (email) {
-            throw new BadRequestException('Email is already taken');
-        }
-
-        const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
-        return this.usersService.createUser({ ...createUserDto, password: hashedPassword });
+  async createUser(createUserDto: CreateUserDto) {
+    const user = await this.usersService.findOneByUsername(
+      createUserDto.username,
+    );
+    if (user) {
+      throw new BadRequestException('Username is already taken');
     }
 
-    async login(loginUserDto: LoginUserDto) {
-        const user = await this.usersService.validateUser(loginUserDto.email, loginUserDto.password);
-        const payload = { email: user.email, sub: user._id, roles: user.roles };
-        return {
-            access_token: this.jwtService.sign(payload),
-        };
+    const email = await this.usersService.findOneByEmail(createUserDto.email);
+    if (email) {
+      throw new BadRequestException('Email is already taken');
     }
+
+    const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
+    return this.usersService.createUser({
+      ...createUserDto,
+      password: hashedPassword,
+    });
+  }
+
+  async login(loginUserDto: LoginUserDto) {
+    const user = await this.usersService.validateUser(
+      loginUserDto.email,
+      loginUserDto.password,
+    );
+    const payload = { email: user.email, sub: user._id, roles: user.roles };
+    return {
+      access_token: this.jwtService.sign(payload),
+    };
+  }
 }
