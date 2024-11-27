@@ -44,4 +44,20 @@ export class UsersService {
     }
     return user;
   }
+
+  async saveRefreshToken(userId: any, refreshToken: string) {
+    await this.userModel.findByIdAndUpdate(userId, { refreshToken });
+  }
+
+  async validateRefreshToken(
+    userId: string,
+    refreshToken: string,
+  ): Promise<boolean> {
+    const user = await this.userModel.findById(userId);
+    return user && user.refreshToken === refreshToken;
+  }
+
+  async invalidateRefreshToken(userId: any) {
+    await this.userModel.findByIdAndUpdate(userId, { refreshToken: null });
+  }
 }

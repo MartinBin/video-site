@@ -38,8 +38,13 @@ export class AuthService {
       loginUserDto.password,
     );
     const payload = { email: user.email, sub: user._id, roles: user.roles };
-    return {
-      access_token: this.jwtService.sign(payload),
-    };
+
+    const accessToken = this.jwtService.sign(payload, { expiresIn: '15m' });
+    const refreshToken = this.jwtService.sign(payload, { expiresIn: '7d' });
+
+    // Store the refresh token in the database
+    await this.usersService.saveRefreshToken(user._id, refreshToken);
+
+    return { accessToken, refreshToken };
   }
 }

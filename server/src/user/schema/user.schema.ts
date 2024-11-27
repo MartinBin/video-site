@@ -19,6 +19,9 @@ export class User extends Document {
   @Prop({ required: false })
   profilePicture?: string;
 
+  @Prop({ required: false })
+  refreshToken?: string;
+
   @Prop({ type: [String], default: [] })
   subscribers: string[];
 
