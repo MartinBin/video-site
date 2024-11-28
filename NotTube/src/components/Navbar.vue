@@ -51,7 +51,7 @@
             </div>
             <div class="py-6">
               <button
-                v-if="isLoggedIn"
+                v-if="authStore.isAuthenticated"
                 @click="logout"
                 class="-mx-3 block w-full rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 text-left"
               >
@@ -85,10 +85,11 @@ import {
   Bars3Icon,
   XMarkIcon,
 } from '@heroicons/vue/24/outline';
+import { useAuthStore } from '@/stores/authStore'; // Adjust the path as necessary
+
+const authStore = useAuthStore();
 
 const mobileMenuOpen = ref(false);
-
-const isLoggedIn = computed(() => !!localStorage.getItem('access_token'));
 
 const logout = async () => {
   try {

@@ -2,6 +2,7 @@
 import axios from 'axios';
 import { defineComponent } from 'vue';
 import router from '@/router';
+import { useAuthStore } from '../stores/authStore';
 
 export default defineComponent({
   data() {
@@ -19,10 +20,12 @@ export default defineComponent({
           password: this.password,
         });
 
-        // Store access token in localStorage
-        localStorage.setItem('access_token', response.data.accessToken);
+        const { accessToken, refreshToken } = response.data;
 
-        localStorage.setItem('refresh_token', response.data.refreshToken);
+        localStorage.setItem('access_token', accessToken);
+        localStorage.setItem('refresh_token', refreshToken);
+        const authStore = useAuthStore();
+        authStore.setAuthData(accessToken, refreshToken);
 
         console.log('Login successful');
         await router.push('/');
@@ -74,4 +77,9 @@ export default defineComponent({
         </p>
       </div>
     </div>
-  </template>
+</template>
+<style scoped>
+.error {
+  color: red;
+}
+</style>
