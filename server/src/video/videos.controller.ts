@@ -12,7 +12,7 @@ import {
   UsePipes,
   UseGuards,
   Req,
-  Request,
+  Request, UploadedFiles,
 } from '@nestjs/common';
 import { VideosService } from './videos.service';
 import {
@@ -31,6 +31,7 @@ import { StrictValidationPipe } from '../pipes/strict-validation.pipe';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from 'src/roles/roles.guard';
 import { Roles } from 'src/roles/roles.decorator';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('videos')
 @Controller('videos')
@@ -38,7 +39,12 @@ export class VideosController {
   constructor(private readonly videosService: VideosService) {}
 
   @Post()
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'video', maxCount: 1 },
+      { name: 'thumbnail', maxCount: 1 },
+    ])
+  )
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @ApiOperation({ summary: 'Create Video' })
   @ApiConsumes('multipart/form-data')
@@ -51,26 +57,43 @@ export class VideosController {
   @Roles('user', 'admin')
   async createVideo(
     @Body() createVideoDto: CreateVideoDto,
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFiles()
+  files: {
+    video?: Express.Multer.File[];
+    thumbnail?: Express.Multer.File[];
+  },
     @Request() req,
   ) {
-    if (!file) {
-      throw new BadRequestException('File is required');
+    if (!files.video?.[0]) {
+      throw new BadRequestException('Video file is required');
     }
-
+  
+    if (!files.thumbnail?.[0]) {
+      throw new BadRequestException('Thumbnail file is required');
+    }
+  
+    const video = files.video[0];
+    const thumbnail = files.thumbnail[0];
+  
     const allowedMimeTypes = [
       'video/mp4',
       'video/mpeg',
       'video/quicktime',
       'video/x-msvideo',
     ];
-    if (!allowedMimeTypes.includes(file.mimetype)) {
-      throw new BadRequestException(
-        'Invalid file type. Only video files are allowed.',
-      );
+  
+    if (!allowedMimeTypes.includes(video.mimetype)) {
+      throw new BadRequestException('Invalid video file type. Only video files are allowed.');
     }
+  
+    const allowedImageTypes = ['image/jpeg', 'image/png', 'image/gif'];
+    if (!allowedImageTypes.includes(thumbnail.mimetype)) {
+      throw new BadRequestException('Invalid thumbnail file type. Only image files are allowed.');
+    }
+  
     const userId = req.user._id;
-    return this.videosService.createVideo(createVideoDto, file, userId);
+  
+    return await this.videosService.createVideo(createVideoDto, video, thumbnail, userId);
   }
 
   @Get(':id')

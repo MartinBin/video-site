@@ -41,7 +41,7 @@ axios.interceptors.response.use(
         const { data } = await axios.post("auth/refresh", {
           refreshToken: localStorage.getItem("refresh_token"),
         });
-
+        console.log(data.accessToken);
         localStorage.setItem("access_token", data.accessToken);
         processQueue(null, data.accessToken);
 

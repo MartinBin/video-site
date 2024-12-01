@@ -10,20 +10,4 @@ export class CreateCommentDto {
   })
   @IsString()
   content: string;
-
-  @ApiPropertyOptional({
-    description: 'The display name of the user who posted the comment',
-    example: 'John Doe',
-  })
-  @IsOptional()
-  @IsString()
-  userDisplayName?: string;
-
-  @ApiProperty({
-    description: 'The date and time when the comment was created',
-    example: '2023-04-21T12:00:00Z',
-  })
-  @IsDate()
-  @Type(() => Date)
-  createdAt: Date;
 }

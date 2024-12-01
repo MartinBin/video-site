@@ -24,8 +24,9 @@ export default defineComponent({
 
         localStorage.setItem('access_token', accessToken);
         localStorage.setItem('refresh_token', refreshToken);
-        const authStore = useAuthStore();
-        authStore.setAuthData(accessToken, refreshToken);
+
+        const auth = useAuthStore();
+        auth.setAuthData();
 
         console.log('Login successful');
         await router.push('/');
@@ -38,7 +39,7 @@ export default defineComponent({
 });
 </script>
 <template>
-    <div class="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
+    <div class="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 mt-16">
       <div class="sm:mx-auto sm:w-full sm:max-w-sm">
         <img class="mx-auto h-10 w-auto" src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=600" alt="Your Company" />
         <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">Sign in to your account</h2>

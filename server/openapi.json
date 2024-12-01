@@ -695,22 +695,10 @@
             "type": "string",
             "description": "The content of the comment",
             "example": "This is a great video!"
-          },
-          "userDisplayName": {
-            "type": "string",
-            "description": "The display name of the user who posted the comment",
-            "example": "John Doe"
-          },
-          "createdAt": {
-            "format": "date-time",
-            "type": "string",
-            "description": "The date and time when the comment was created",
-            "example": "2023-04-21T12:00:00Z"
           }
         },
         "required": [
-          "content",
-          "createdAt"
+          "content"
         ]
       },
       "UpdateCommentDto": {

@@ -20,10 +20,16 @@ export class VideoCommentsService {
     videoId: string,
     createCommentDto: CreateCommentDto,
     userId: string,
-  ): Promise<Video> {
+    userName: string,
+  ): Promise<Comment> {
+    const createCommentDtoWithUserId = {
+      ...createCommentDto,
+      userId: userId,
+      userDisplayName: userName,
+      createdAt: new Date(),
+    };
 
-    const createCommentDtoWithUserId = { ...createCommentDto, userId: userId };
-    const createdComment = await this.videoModel
+    const updatedVideo = await this.videoModel
       .findByIdAndUpdate(
         { _id: videoId },
         { $push: { comments: createCommentDtoWithUserId } },
@@ -31,11 +37,14 @@ export class VideoCommentsService {
       )
       .exec();
 
-    if (!createdComment) {
+    if (!updatedVideo) {
       throw new NotFoundException('Video not found');
     }
 
-    return createdComment;
+    const newlyAddedComment =
+      updatedVideo.comments[updatedVideo.comments.length - 1];
+
+    return newlyAddedComment;
   }
 
   async findAllForVideo(videoId: string): Promise<Comment[]> {

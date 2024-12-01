@@ -11,6 +11,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { UpdateVideoDto } from 'src/video/dto/update-video.dto';
 import { UsersService } from 'src/user/users.service';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class VideosService {
@@ -18,24 +19,38 @@ export class VideosService {
     @InjectModel(Video.name) private videoModel: Model<Video>,
     private usersService: UsersService,
   ) {}
-  createVideo(
+  async createVideo(
     createVideoDto: CreateVideoDto,
-    file: Express.Multer.File,
+    video: Express.Multer.File,
+    thumbnail: Express.Multer.File,
     userId: string,
   ): Promise<Video> {
-    const fileName = `${Date.now()}+${file.originalname}`;
-    const filePath = path.join(__dirname, '..', '..', 'uploads', fileName);
+    const videoId = uuidv4();
+    const userIdString = userId.toString();
 
-    if (!fs.existsSync(path.dirname(filePath))) {
-      fs.mkdirSync(path.dirname(filePath), { recursive: true });
+    const videoFileName = `${videoId}_${video.originalname}`;
+    const thumbnailFileName = `${videoId}_${thumbnail.originalname}`;
+
+    const videoFolderPath = path.join(__dirname, '..', '..', 'uploads', userIdString, `${videoId}`);
+
+    if (!fs.existsSync(videoFolderPath)) {
+      fs.mkdirSync(videoFolderPath, { recursive: true });
     }
-    fs.writeFileSync(filePath, file.buffer);
+
+    const videoFilePath = path.join(videoFolderPath, videoFileName);
+    const thumbnailFilePath = path.join(videoFolderPath, thumbnailFileName);
+
+    fs.writeFileSync(videoFilePath, video.buffer);
+    fs.writeFileSync(thumbnailFilePath, thumbnail.buffer);
+
     const newVideo = new this.videoModel({
       ...createVideoDto,
-      userId: userId,
-      url: `/uploads/${fileName}`,
+      userId,
+      url: `/uploads/${userIdString}/${videoId}/${videoFileName}`,
+      thumbnail: `/uploads/${userIdString}/${videoId}/${thumbnailFileName}`,
     });
-    return newVideo.save();
+
+    return await newVideo.save();
   }
 
   async findOneVideo(id: string) {

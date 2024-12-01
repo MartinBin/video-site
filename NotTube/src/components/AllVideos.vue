@@ -1,11 +1,25 @@
 <template>
-  <div class="mt-16 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
-    <div v-if="loading" class="text-center">Loading videos...</div>
-    <div v-for="item in items" :key="item._id" class="bg-gray-100 p-4">
+  <div class="mt-16 p-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div v-if="loading" class="text-center">Loading videos...</div>
+      <div
+        v-for="item in items"
+        :key="item._id"
+        class="shadow-2xl bg-gray-200 pb-4 rounded-lg border-gray-300 border"
+      >
         <button class="w-full text-left" @click="openVideo(item._id)">
-            <h3 class="font-bold text-black">{{ item.title }}</h3>
-            <p class="text-sm text-black">{{ item.description }}</p>
-      </button>
+          <img v-if="item.thumbnail == null"
+               class="pb-2 rounded-t-lg w-full h-40 object-cover"
+            src="https://www.yeoandyeo.com/wp-content/uploads/07_02_21_1253437873_AAB_560x292.jpg"
+          >
+          <img v-else
+               class="pb-2 rounded-t-lg w-full h-40 object-cover"
+            :src="'http://localhost:3000' + item.thumbnail"
+          >
+          <h3 class="font-bold text-black px-4 pb-2">{{ item.title }}</h3>
+          <p class="text-sm text-black px-4">{{ item.description }}</p>
+        </button>
+      </div>
     </div>
   </div>
 </template>

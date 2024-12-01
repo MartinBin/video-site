@@ -49,10 +49,11 @@ export class VideoCommentsController {
       throw new BadRequestException('Invalid ID format');
     }
     const userId = req.user._id.toString();
+    const userName = req.user.username;
     return this.videoCommentsService.addComment(
       videoId,
       createCommentDto,
-      userId,
+      userId, userName
     );
   }
 

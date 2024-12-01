@@ -22,6 +22,9 @@ dotenv.config();
     AuthModule,
     MulterModule.register({
       dest: './uploads',
+      limits: {
+        fileSize: 524288000, // 500MB in bytes
+      },
     }),
   ],
   controllers: [],
