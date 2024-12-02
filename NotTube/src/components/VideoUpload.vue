@@ -168,7 +168,8 @@ export default defineComponent({
         </div>
       </div>
 
-      <div v-if="isUploading" class="mt-4">
+      <div
+        class="mt-4">
         <div class="w-full bg-gray-200 rounded-full h-2.5">
           <div class="bg-blue-600 h-2.5 rounded-full" :style="{ width: uploadProgress + '%' }"></div>
         </div>

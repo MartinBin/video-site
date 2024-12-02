@@ -66,8 +66,8 @@
             <div class="py-6">
               <!-- Show Log Out and Upload if authenticated -->
               <div v-if="auth.isAuthenticated">
-                <router-link to='/user/{{user.userId}}' custom v-slot="{ user }">
-                  <button @click="user" class="-mx-3 block w-full rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 text-left">
+                <router-link :to='`/user/${user.userId}`' custom v-slot="{ navigate }">
+                  <button @click="navigate" class="-mx-3 block w-full rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 text-left">
                     Profile
                   </button>
                 </router-link>

@@ -122,13 +122,21 @@ export class VideosService {
   }
   
   async getVideoByUserId(id: string){
-    if(this.usersService.findById(id)) {
+    try {
+      // First check if user exists
+      await this.usersService.findById(id);
+
+      // Then find videos for that user
       const videos = await this.videoModel
-          .where((x) => x.userId.toString() === id)
+          .find({ userId: id })
           .exec();
+
       return videos;
-    }else{
-      throw new NotFoundException('User not found');
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      throw new NotFoundException('Videos not found');
     }
   }
 }
