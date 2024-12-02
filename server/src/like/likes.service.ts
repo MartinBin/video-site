@@ -19,7 +19,7 @@ export class LikesService {
   async likeComment(
     videoId: string,
     commentId: string,
-    createLikeDto: CreateLikeDto,
+    username: string,
     userId: string,
   ): Promise<Comment> {
     const video = await this.videoModel.findById(videoId).exec();
@@ -35,7 +35,7 @@ export class LikesService {
     }
 
     const newLike = {
-      userDisplayName: createLikeDto.userDisplayName,
+      userDisplayName: username,
       createdAt: new Date(),
       userId: userId,
     };

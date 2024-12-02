@@ -120,4 +120,15 @@ export class VideosService {
     }
     return deletedVideo;
   }
+  
+  async getVideoByUserId(id: string){
+    if(this.usersService.findById(id)) {
+      const videos = await this.videoModel
+          .where((x) => x.userId.toString() === id)
+          .exec();
+      return videos;
+    }else{
+      throw new NotFoundException('User not found');
+    }
+  }
 }

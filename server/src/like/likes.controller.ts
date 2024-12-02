@@ -46,7 +46,6 @@ export class LikesController {
   async likeComment(
     @Param('videoId') videoId: string,
     @Param('commentId') commentId: string,
-    @Body() likeDto: CreateLikeDto,
     @Request() req,
   ) {
     if (!Types.ObjectId.isValid(videoId)) {
@@ -56,7 +55,8 @@ export class LikesController {
       throw new BadRequestException('Invalid commentID format');
     }
     const userId = req.user._id.toString();
-    return this.likesService.likeComment(videoId, commentId, likeDto,userId);
+    const userName = req.user.username;
+    return this.likesService.likeComment(videoId, commentId, userName,userId);
   }
 
   @Delete(':likeId')

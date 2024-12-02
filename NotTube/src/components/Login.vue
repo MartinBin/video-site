@@ -3,6 +3,7 @@ import axios from 'axios';
 import { defineComponent } from 'vue';
 import router from '@/router';
 import { useAuthStore } from '../stores/authStore';
+import {useUserStore} from '@/stores/userStore'
 
 export default defineComponent({
   data() {
@@ -27,6 +28,8 @@ export default defineComponent({
 
         const auth = useAuthStore();
         auth.setAuthData();
+        const user = useUserStore();
+        user.setUserInfo();
 
         console.log('Login successful');
         await router.push('/');

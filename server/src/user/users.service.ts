@@ -60,4 +60,12 @@ export class UsersService {
   async invalidateRefreshToken(userId: any) {
     await this.userModel.findByIdAndUpdate(userId, { refreshToken: null });
   }
+
+  async getUserById(id: string) {
+    const user = await this.userModel.findById(id).select('-password -refreshToken -roles').exec();
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    return user;
+  }
 }

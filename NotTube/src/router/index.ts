@@ -5,6 +5,7 @@ import Register from '../components/Register.vue';
 import VideoDetail from '@/components/VideoDetail.vue';
 import PageNotFound from '@/components/404Found.vue'
 import VideoUpload from '@/components/VideoUpload.vue'
+import UserProfile from '@/components/UserPage.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -30,6 +31,11 @@ const router = createRouter({
       name: 'Upload Video',
       path: '/upload-video',
       component: VideoUpload
+    },
+    {
+      name: 'User Profile',
+      path: '/user/:id',
+      component: UserProfile
     },
   ]
 })

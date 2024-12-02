@@ -1,18 +1,21 @@
-import { Module } from '@nestjs/common';
+import {forwardRef, Module} from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
 import { User, UserSchema } from './schema/user.schema';
 import * as dotenv from 'dotenv';
+import {VideosService} from "../video/videos.service";
+import {VideoModule} from "../video/videos.module";
 
 dotenv.config();
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]), // Provide UserModel
+    forwardRef(() => VideoModule),
+    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
   ],
   providers: [UsersService],
   controllers: [UsersController],
-  exports: [UsersService], // Export UsersService to be used in other modules
+  exports: [UsersService],
 })
 export class UsersModule {}

@@ -19,5 +19,6 @@ import { UsersService } from 'src/user/users.service';
   ],
   providers: [VideosService],
   controllers: [VideosController],
+  exports:[VideosService],
 })
 export class VideoModule {}
