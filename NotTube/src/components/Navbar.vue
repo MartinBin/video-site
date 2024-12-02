@@ -6,7 +6,13 @@
           <span class="sr-only">NotTube</span>
           <img class="h-8 w-auto" src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=600" alt="NotTube logo" />
         </a>
-        <a href="/" class="ml-4 hidden lg:inline-block text-sm font-semibold leading-6 text-gray-900">Home</a>
+        <a
+          href="/"
+          class="ml-4 hidden lg:inline-flex items-center text-sm font-semibold leading-6 text-gray-900"
+        >
+          <HomeIcon class="h-5 w-5 mr-1" />
+          Home
+        </a>
       </div>
       <div class="flex lg:hidden">
         <button type="button" class="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700" @click="mobileMenuOpen = true">
@@ -61,7 +67,13 @@
         <div class="mt-6 flow-root">
           <div class="-my-6 divide-y divide-gray-500/10">
             <div class="space-y-2 py-6">
-              <a href="/" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">Home</a>
+              <a
+                href="/"
+                class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 flex items-center"
+              >
+                <HomeIcon class="h-5 w-5 mr-2" />
+                <span>Home</span>
+              </a>
             </div>
             <div class="py-6">
               <!-- Show Log Out and Upload if authenticated -->
@@ -113,7 +125,8 @@ import {
   XMarkIcon,
 } from '@heroicons/vue/24/outline';
 import { useAuthStore } from '@/stores/authStore';
-import {useUserStore} from "@/stores/userStore"; // Adjust the path as necessary
+import {useUserStore} from "@/stores/userStore";
+import { HomeIcon } from '@heroicons/vue/24/outline'
 
 const auth = useAuthStore();
 

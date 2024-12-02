@@ -8,14 +8,18 @@
         class="shadow-2xl bg-gray-200 pb-4 rounded-lg border-gray-300 border"
       >
         <button class="w-full text-left" @click="openVideo(item._id)">
-          <img v-if="item.thumbnail == null"
-               class="pb-2 rounded-t-lg w-full h-40 object-cover"
-            src="https://www.yeoandyeo.com/wp-content/uploads/07_02_21_1253437873_AAB_560x292.jpg"
-          >
-          <img v-else
-               class="pb-2 rounded-t-lg w-full h-40 object-cover"
-            :src="'http://localhost:3000' + item.thumbnail"
-          >
+          <div class="relative aspect-w-16 aspect-h-9 overflow-hidden rounded-t-lg">
+            <img
+              v-if="item.thumbnail == null"
+              class="absolute inset-0 w-full h-full object-cover"
+              src="https://www.yeoandyeo.com/wp-content/uploads/07_02_21_1253437873_AAB_560x292.jpg"
+            >
+            <img
+              v-else
+              class="absolute inset-0 w-full h-full object-cover"
+              :src="'http://localhost:3000' + item.thumbnail"
+            >
+          </div>
           <h3 class="font-bold text-black px-4 pb-2">{{ item.title }}</h3>
           <p class="text-sm text-black px-4">{{ item.description }}</p>
         </button>

@@ -8,7 +8,7 @@
         style="object-fit: contain;"
         ></video>
       <h1 class="text-2xl font-bold mb-2 text-black">{{ video.title }}</h1>
-      <h1 class="text-sm font-bold mb-2 text-black"><a href="">{{ username }}</a></h1>
+      <h1 class="text-sm font-bold mb-2 text-black"><a :href='`/user/${video.userId}`'>{{ username }}</a></h1>
         <!---<div class="flex items-center space-x-4">
             <button class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">Like</button>
             <button class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400">Dislike</button>
@@ -56,8 +56,12 @@
               </div>
               <p v-else class="text-gray-700" v-html="formatContent(comment.content)"></p>
               <div v-if="auth.isAuthenticated" class="flex items-center space-x-2 mt-1">
-                <button @click="likeComment(comment)" class="text-blue-600 hover:underline">
-                  Like ({{ comment.likesCount }})
+                <button
+                  @click="likeComment(comment)"
+                  class="text-blue-600 hover:underline flex items-center space-x-1"
+                >
+                  <HandThumbUpIcon class="h-4 w-4" />
+                  <span>Like ({{ comment.likesCount }})</span>
                 </button>
               </div>
             </div>
@@ -80,7 +84,7 @@
   import {useAuthStore} from "@/stores/authStore";
   import DOMPurify from 'dompurify';
   import router from "@/router";
-  import { PencilSquareIcon, TrashIcon } from '@heroicons/vue/24/outline'
+  import { PencilSquareIcon, TrashIcon, HandThumbUpIcon } from '@heroicons/vue/24/outline'
   import {useUserStore} from "@/stores/userStore";
   import ConfirmationDialog from "@/components/ConfirmationDialog.vue";
 

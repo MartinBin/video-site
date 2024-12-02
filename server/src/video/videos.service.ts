@@ -4,7 +4,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import {Model, Types} from 'mongoose';
 import { CreateVideoDto } from 'src/video/dto/create-video.dto';
 import { Video } from './schema/video.schema';
 import * as fs from 'fs';
@@ -128,7 +128,7 @@ export class VideosService {
 
       // Then find videos for that user
       const videos = await this.videoModel
-          .find({ userId: id })
+          .find({ userId: new Types.ObjectId(id) })
           .exec();
 
       return videos;
