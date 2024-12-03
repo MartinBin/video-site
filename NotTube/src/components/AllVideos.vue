@@ -17,7 +17,7 @@
             <img
               v-else
               class="absolute inset-0 w-full h-full object-cover"
-              :src="'http://localhost:3000' + item.thumbnail"
+              :src="`${import.meta.env.VITE_API_URL}${item.thumbnail}`"
             >
           </div>
           <h3 class="font-bold text-black px-4 pb-2">{{ item.title }}</h3>

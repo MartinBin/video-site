@@ -1,7 +1,7 @@
 <template>
     <div class="max-w-2xl w-fit mx-auto lg:mt-16 mt-9 ">
         <video
-        :src="'http://localhost:3000' + video.url"
+        :src="`${import.meta.env.VITE_API_URL}${video.url}`"
         controls
         autoplay
         class="w-full h-auto shadow-lg mb-4"
