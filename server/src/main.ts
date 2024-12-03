@@ -17,7 +17,12 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
 
   app.enableCors({
-    origin: ['http://localhost:5173', 'https://binis.lt'],
+    origin: ['http://localhost:5173',
+        'https://binis.lt',
+        'https://www.binis.lt',
+        'http://binis.lt',
+        'http://www.binis.lt'
+      ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
