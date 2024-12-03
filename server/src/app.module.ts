@@ -9,12 +9,22 @@ import { JwtModule } from '@nestjs/jwt';
 import * as dotenv from 'dotenv';
 import { PassportModule } from '@nestjs/passport';
 import { AuthModule } from './auth/auth.module';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 dotenv.config();
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://localhost/BinisTube'),
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        uri: configService.get<string>('MONGO_URI'),
+      }),
+      inject: [ConfigService],
+    }),
     VideoModule,
     CommentModule,
     LikesModule,
