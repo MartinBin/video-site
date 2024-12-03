@@ -13,7 +13,7 @@
             <button class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">Like</button>
             <button class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400">Dislike</button>
             <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Share</button>
-        </div>-->
+        </div>--->
       <div v-if="video.description!=''" class="md:container md:mx-auto bg-gray-400 rounded-md p-3">
         <p class="text-white mb-4" v-html="formatContent(video.description)"></p>
       </div>
