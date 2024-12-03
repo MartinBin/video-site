@@ -44,10 +44,11 @@ import axios from 'axios';
 import { useUserStore } from '@/stores/userStore';
 import router from "@/router";
 import { useRoute } from "vue-router";
+import { type Video } from '@/types'
 
 const user = useUserStore();
 const profile = ref<Profile>();
-const videos = ref([]);
+const videos = ref<Video[]>([]);
 const loading = ref(true);
 
 interface Profile {
@@ -81,7 +82,7 @@ onMounted(async () => {
     const response = await axios.get(`/users/${userId}`);
     profile.value = response.data;
     await getUserVideos();
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error fetching user data:', error);
     if (error.response?.status === 404 || error.response?.status === 400) {
       router.push("/404");

@@ -5,13 +5,13 @@ import axios from "axios";
 export default defineComponent({
   data() {
     return {
-      videoFile: null,
+      videoFile: null as File | null,
       title: '',
       description: '',
-      thumbnail: null,
+      thumbnail: null as File | null,
       snippetTime: 0,
       videoDuration: 0,
-      thumbnailPreview: null,
+      thumbnailPreview: null as string | null,
       uploadProgress: 0,
       isUploading: false
     };
@@ -32,12 +32,13 @@ export default defineComponent({
         this.thumbnail = target.files[0];
         const reader = new FileReader();
         reader.onload = () => {
-          this.thumbnailPreview = reader.result;
+          this.thumbnailPreview = reader.result as string;
         };
         reader.readAsDataURL(this.thumbnail);
       }
     },
     getVideoDuration() {
+      if (!this.videoFile) return;
       const videoElement = document.createElement('video');
       videoElement.src = URL.createObjectURL(this.videoFile);
       videoElement.onloadedmetadata = () => {
@@ -77,7 +78,7 @@ export default defineComponent({
         console.log('Video uploaded successfully:', response.data);
         alert('Video uploaded successfully!');
         this.resetForm();
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error uploading video:', error.response ? error.response.data : error.message);
         alert('Error uploading video. Please try again.');
       } finally {
@@ -150,7 +151,7 @@ export default defineComponent({
           @change="onThumbnailChange"
           class="mt-1 block w-full text-gray-900 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
         />
-        <div v-if="thumbnail" class="mt-2">
+        <div v-if="thumbnail && thumbnailPreview" class="mt-2">
           <img :src="thumbnailPreview" alt="Thumbnail Preview" class="w-32 h-32 object-cover rounded-md" />
         </div>
 

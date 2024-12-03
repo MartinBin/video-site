@@ -40,11 +40,19 @@
           <form @submit.prevent="updateVideo">
             <div class="mb-4">
               <label class="block text-sm font-medium mb-1">Title</label>
-              <input v-model="editingVideo.title" type="text" class="w-full border rounded p-2">
+              <input 
+                v-model="editingVideo!.title" 
+                type="text" 
+                class="w-full border rounded p-2"
+              >
             </div>
             <div class="mb-4">
               <label class="block text-sm font-medium mb-1">Description</label>
-              <textarea v-model="editingVideo.description" class="w-full border rounded p-2" rows="3"></textarea>
+              <textarea 
+                v-model="editingVideo!.description" 
+                class="w-full border rounded p-2" 
+                rows="3"
+              ></textarea>
             </div>
             <div class="flex justify-end space-x-2">
               <button type="button" @click="showEditModal = false"
@@ -84,14 +92,15 @@
   import axios from 'axios';
   import { useUserStore } from '@/stores/userStore';
   import router from "@/router";
+  import { type Video } from '@/types'
 
   const user = useUserStore();
-  const videos = ref([]);
+  const videos = ref<Video[]>([])
   const loading = ref(true);
   const showEditModal = ref(false);
   const showDeleteModal = ref(false);
-  const editingVideo = ref(null);
-  const videoToDelete = ref(null);
+  const editingVideo = ref<Video | null>(null)
+  const videoToDelete = ref<Video | null>(null)
 
   const getUserVideos = async () => {
     try {
@@ -102,12 +111,12 @@
     }
   };
 
-  const editVideo = (video) => {
+  const editVideo = (video: any) => {
     editingVideo.value = { ...video };
     showEditModal.value = true;
   };
 
-  const confirmDelete = (video) => {
+  const confirmDelete = (video: any) => {
     videoToDelete.value = video;
     showDeleteModal.value = true;
   };
@@ -116,10 +125,10 @@
     try {
       const token = localStorage.getItem("access_token");
       await axios.patch(
-        `/videos/${editingVideo.value._id}`,
+        `/videos/${editingVideo.value!._id}`,
         {
-          title: editingVideo.value.title,
-          description: editingVideo.value.description
+          title: editingVideo.value!.title,
+          description: editingVideo.value!.description
         },
         {
           headers: { Authorization: `Bearer ${token}` }
@@ -136,7 +145,7 @@
   const deleteVideo = async () => {
     try {
       const token = localStorage.getItem("access_token");
-      await axios.delete(`/videos/${videoToDelete.value._id}`, {
+      await axios.delete(`/videos/${videoToDelete.value!._id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
 

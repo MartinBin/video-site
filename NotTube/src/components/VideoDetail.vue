@@ -73,7 +73,7 @@
     title="Delete Comment"
     message="Are you sure you want to delete this comment? This action cannot be undone."
     @cancel="cancelDelete"
-    @confirm="deleteComment(confirmationDialog.comment)"
+    @confirm="deleteComment(confirmationDialog.comment!)"
   />
 </template>
 
@@ -95,10 +95,11 @@
   const route = useRoute();
   const videoId = route.params.id as string;
 
-  const video = ref<{ title: string; description: string; url: string; comments?: Comment[] }>({
+  const video = ref<{ title: string; description: string; url: string; userId: string; comments?: Comment[] }>({
     title: '',
     description: '',
     url: '',
+    userId: '',
   });
   const username = ref<string>('');
   const comments = ref<Comment[]>([]);
@@ -143,7 +144,7 @@
         );
         comment.likesCount = likeResponse.data.likesCount;
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Error fetching video data:', error);
       if(error.code === "ERR_BAD_REQUEST" || error.status === 404){
         router.push("/404");
@@ -166,6 +167,8 @@
           userDisplayName: response.data.userDisplayName,
           content: response.data.content,
           likesCount: 0,
+          userId: response.data.userId,
+          isEditing: false
         });
 
         newComment.value = '';
@@ -179,7 +182,10 @@
     try{
       const token = localStorage.getItem("access_token");
       const response = await  axios.post(`videos/${videoId}/comments/${comment._id}/likes`, {},{headers: { Authorization: `Bearer ${token}` }})
-      comments.value.find(x => x._id === comment._id).likesCount+1;
+      const foundComment = comments.value.find(x => x._id === comment._id);
+      if (foundComment) {
+        foundComment.likesCount += 1;
+      }
     } catch(error: unknown) {
       console.error('Error adding like to comment:', error);
     }

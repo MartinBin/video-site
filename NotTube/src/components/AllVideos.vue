@@ -33,7 +33,8 @@
     import { ref, onMounted } from 'vue';
     import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/vue/20/solid'
     import { useRouter } from "vue-router";
-    let items = ref([]);
+    import { type Video } from '@/types'
+    const items = ref<Video[]>([]);
     const loading = ref(true);
     const router = useRouter();
 
