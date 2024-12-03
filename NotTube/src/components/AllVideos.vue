@@ -17,7 +17,7 @@
             <img
               v-else
               class="absolute inset-0 w-full h-full object-cover"
-              :src="`${import.meta.env.VITE_API_URL}${item.thumbnail}`"
+              :src="apiUrl + item.thumbnail"
             >
           </div>
           <h3 class="font-bold text-black px-4 pb-2">{{ item.title }}</h3>
@@ -37,7 +37,7 @@
     const items = ref<Video[]>([]);
     const loading = ref(true);
     const router = useRouter();
-
+    const apiUrl = ref(import.meta.env.VITE_API_URL || 'http://localhost:3000');
     const openVideo= (id: string) =>{
         router.push(`/video/${id}`);
     };

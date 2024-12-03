@@ -9,7 +9,7 @@
                class="border rounded-lg p-4 flex justify-between items-center bg-gray-50">
             <div class="flex items-center space-x-4">
               <img
-                :src="video.thumbnail ? `${import.meta.env.VITE_API_URL}${video.thumbnail}` : 'default-thumbnail.jpg'"
+                :src="video.thumbnail ? apiUrl + video.thumbnail : 'default-thumbnail.jpg'"
                 class="w-32 h-20 object-cover rounded"
                 alt="Video thumbnail"
               />
@@ -40,17 +40,17 @@
           <form @submit.prevent="updateVideo">
             <div class="mb-4">
               <label class="block text-sm font-medium mb-1">Title</label>
-              <input
-                v-model="editingVideo!.title"
-                type="text"
+              <input 
+                v-model="editingVideo!.title" 
+                type="text" 
                 class="w-full border rounded p-2"
               >
             </div>
             <div class="mb-4">
               <label class="block text-sm font-medium mb-1">Description</label>
-              <textarea
-                v-model="editingVideo!.description"
-                class="w-full border rounded p-2"
+              <textarea 
+                v-model="editingVideo!.description" 
+                class="w-full border rounded p-2" 
                 rows="3"
               ></textarea>
             </div>
@@ -101,7 +101,7 @@
   const showDeleteModal = ref(false);
   const editingVideo = ref<Video | null>(null)
   const videoToDelete = ref<Video | null>(null)
-
+  const apiUrl = ref(import.meta.env.VITE_API_URL || 'http://localhost:3000');
   const getUserVideos = async () => {
     try {
       const response = await axios.get(`/users/${user.userId}/video`);

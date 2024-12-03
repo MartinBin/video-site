@@ -26,7 +26,7 @@
               <img
                 v-else
                 class="absolute inset-0 w-full h-full object-cover"
-                :src="`${import.meta.env.VITE_API_URL}${item.thumbnail}`"
+                :src="apiUrl + item.thumbnail"
               >
             </div>
             <h3 class="font-bold text-black px-4 pb-2">{{ item.title }}</h3>
@@ -50,6 +50,8 @@ const user = useUserStore();
 const profile = ref<Profile>();
 const videos = ref<Video[]>([]);
 const loading = ref(true);
+
+const apiUrl = ref(import.meta.env.VITE_API_URL || 'http://localhost:3000');
 
 interface Profile {
   _id: string;

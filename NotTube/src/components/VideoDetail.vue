@@ -1,7 +1,7 @@
 <template>
     <div class="max-w-2xl w-fit mx-auto lg:mt-16 mt-9 ">
         <video
-        :src="`${import.meta.env.VITE_API_URL}${video.url}`"
+        :src="apiUrl + video.url"
         controls
         autoplay
         class="w-full h-auto shadow-lg mb-4"
@@ -13,7 +13,7 @@
             <button class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">Like</button>
             <button class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400">Dislike</button>
             <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Share</button>
-        </div>--->
+        </div>-->
       <div v-if="video.description!=''" class="md:container md:mx-auto bg-gray-400 rounded-md p-3">
         <p class="text-white mb-4" v-html="formatContent(video.description)"></p>
       </div>
@@ -87,7 +87,7 @@
   import { PencilSquareIcon, TrashIcon, HandThumbUpIcon } from '@heroicons/vue/24/outline'
   import {useUserStore} from "@/stores/userStore";
   import ConfirmationDialog from "@/components/ConfirmationDialog.vue";
-
+  const apiUrl = ref(import.meta.env.VITE_API_URL || 'http://localhost:3000');
   const confirmationDialog = ref({
     show: false,
     comment: null as Comment | null,
