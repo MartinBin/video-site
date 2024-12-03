@@ -6,6 +6,7 @@ import VideoDetail from '@/components/VideoDetail.vue';
 import PageNotFound from '@/components/404Found.vue'
 import VideoUpload from '@/components/VideoUpload.vue'
 import UserProfile from '../components/UserPage.vue'
+import UserDashboard from '../components/UserDashboard.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -37,6 +38,12 @@ const router = createRouter({
       path: '/user/:id',
       component: UserProfile,
       props: true,
+    },
+    {
+      path: '/dashboard',
+      name: 'Dashboard',
+      component: UserDashboard,
+      meta: { requiresAuth: true }
     },
   ]
 })
