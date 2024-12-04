@@ -22,6 +22,9 @@ export class Video extends Document {
 
   @Prop({ type: [CommentSchema], default: [] })
   comments: Comment[];
+
+  @Prop({ default: 'pending' })
+  status: string;
 }
 export type VideoDocument = Video & Document;
 export const VideoSchema = SchemaFactory.createForClass(Video);

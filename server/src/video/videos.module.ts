@@ -6,6 +6,7 @@ import { Video, VideoSchema } from './schema/video.schema';
 import { UsersModule } from 'src/user/users.module';
 import { VideosService } from 'src/video/videos.service';
 import { UsersService } from 'src/user/users.service';
+import { BullModule } from '@nestjs/bull';
 
 @Module({
   imports: [
@@ -16,6 +17,9 @@ import { UsersService } from 'src/user/users.service';
         schema: VideoSchema,
       },
     ]),
+    BullModule.registerQueue({
+      name: 'video',
+    }),
   ],
   providers: [VideosService],
   controllers: [VideosController],

@@ -9,13 +9,22 @@ export default defineComponent({
       username: '',
       email: '',
       password: '',
-      confirmPassword: '', // Add confirmPassword as part of the data
+      confirmPassword: '',
+      errorMessage: '',
+      passwordRequirements: [
+        'At least 8 characters long',
+        'Must contain at least 1 uppercase letter',
+        'Must contain at least 1 lowercase letter',
+        'Must contain at least 1 number',
+        'Must contain at least 1 special character'
+      ],
+      showPasswordRequirements: false,
     };
   },
   methods: {
     async register() {
       if (this.password !== this.confirmPassword) {
-        console.error('Passwords do not match');
+        this.errorMessage = 'Passwords do not match';
         return;
       }
 
@@ -25,10 +34,16 @@ export default defineComponent({
           email: this.email,
           password: this.password,
         });
-
+        this.errorMessage = '';
         await router.push('/login');
-      } catch (error) {
-        console.error('Error during registration:', error);
+      } catch (error:any) {
+        if (error.response?.data?.message) {
+          this.errorMessage = Array.isArray(error.response.data.message)
+            ? error.response.data.message.join(', ')
+            : error.response.data.message;
+        } else {
+          this.errorMessage = 'An error occurred during registration';
+        }
       }
     },
   },
@@ -47,6 +62,8 @@ export default defineComponent({
       <div class="sm:mx-auto sm:w-full sm:max-w-sm">
         <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">Create your account</h2>
         <form class="space-y-6 mt-8" @submit.prevent="register">
+
+          <div v-if="errorMessage" class="text-red-500 text-sm">{{ errorMessage }}</div>
           <div>
             <label for="username" class="block text-sm font-medium leading-6 text-gray-900">User name</label>
             <div class="mt-2">
@@ -66,6 +83,15 @@ export default defineComponent({
             <div class="mt-2">
               <input v-model="password" id="password" name="password" type="password" autocomplete="current-password" required class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
             </div>
+          </div>
+
+          <div v-if="showPasswordRequirements" class="mt-2 text-sm text-gray-500">
+            <p class="font-medium mb-1">Password must have:</p>
+            <ul class="list-disc pl-5 space-y-1">
+              <li v-for="(requirement, index) in passwordRequirements" :key="index">
+                {{ requirement }}
+              </li>
+            </ul>
           </div>
 
           <div>

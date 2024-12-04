@@ -13,15 +13,24 @@ export default defineComponent({
       videoDuration: 0,
       thumbnailPreview: null as string | null,
       uploadProgress: 0,
-      isUploading: false
+      isUploading: false,
+      processingStatus: '',
+      errorMessage: '',
     };
   },
   methods: {
     onFileChange(event: Event) {
       const target = event.target as HTMLInputElement;
       if (target.files && target.files[0]) {
-        this.videoFile = target.files[0];
-        if (this.videoFile) {
+        const file = target.files[0];
+        const maxSizeInBytes = 500 * 1024 * 1024; // 500 MB
+
+        if (file.size > maxSizeInBytes) {
+          this.errorMessage = 'File size exceeds 500 MB limit.';
+          this.videoFile = null;
+        } else {
+          this.errorMessage = '';
+          this.videoFile = file;
           this.getVideoDuration();
         }
       }
@@ -53,6 +62,7 @@ export default defineComponent({
 
       this.isUploading = true;
       this.uploadProgress = 0;
+      this.processingStatus = 'Uploading...';
 
       const formData = new FormData();
       formData.append('video', this.videoFile);
@@ -74,6 +84,9 @@ export default defineComponent({
             }
           },
         });
+        this.processingStatus = 'Processing video...';
+        
+        await this.checkProcessingStatus(response.data.videoId);
 
         console.log('Video uploaded successfully:', response.data);
         alert('Video uploaded successfully!');
@@ -83,6 +96,27 @@ export default defineComponent({
         alert('Error uploading video. Please try again.');
       } finally {
         this.isUploading = false;
+      }
+    },
+
+    async checkProcessingStatus(videoId: string) {
+      // Poll the backend every 5 seconds to check processing status
+      while (true) {
+        const token = localStorage.getItem("access_token");
+        const response = await axios.get(`/videos/${videoId}/status`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          }
+        });
+
+        if (response.data.status === 'completed') {
+          break;
+        } else if (response.data.status === 'failed') {
+          throw new Error('Video processing failed');
+        }
+
+        // Wait 5 seconds before next check
+        await new Promise(resolve => setTimeout(resolve, 5000));
       }
     },
     resetForm() {
@@ -115,6 +149,7 @@ export default defineComponent({
           required
         />
         <p v-if="videoFile" class="mt-2 text-sm text-gray-600">{{ videoFile.name }}</p>
+        <p v-if="errorMessage" class="mt-2 text-sm text-red-600">{{ errorMessage }}</p>
       </div>
 
       <div>
