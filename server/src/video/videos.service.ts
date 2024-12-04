@@ -61,7 +61,6 @@ export class VideosService {
 
     const savedVideo = await newVideo.save();
 
-    // Add compression job to queue
     await this.videoQueue.add('compress', {
       videoId: savedVideo._id,
       inputPath: videoFilePath,

@@ -86,7 +86,7 @@ export default defineComponent({
         });
         this.processingStatus = 'Processing video...';
         
-        await this.checkProcessingStatus(response.data.videoId);
+        await this.checkProcessingStatus(response.data._id);
 
         console.log('Video uploaded successfully:', response.data);
         alert('Video uploaded successfully!');
