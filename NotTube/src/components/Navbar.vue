@@ -49,7 +49,7 @@
               Upload
             </button>
           </router-link>
-          <button @click="logout; mobileMenuOpen = false" class="text-sm font-semibold leading-6 text-gray-900 hover:text-red-600">
+          <button @click="logout(); mobileMenuOpen = false" class="text-sm font-semibold leading-6 text-gray-900 hover:text-red-600">
             Log out
           </button>
         </div>

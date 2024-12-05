@@ -196,6 +196,7 @@
           userDisplayName: response.data.userDisplayName,
           content: response.data.content,
           likesCount: 0,
+          likes: [],
           userId: response.data.userId,
           isEditing: false
         });
