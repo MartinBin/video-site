@@ -35,17 +35,17 @@
         </div>
         <div v-if="auth.isAuthenticated" class="flex space-x-4">
           <router-link :to="`/user/${user.userId}`" custom v-slot="{ navigate }">
-            <button @click="navigate; mobileMenuOpen = false" class="text-sm font-semibold leading-6 text-gray-900 hover:text-red-600">
+            <button @click="navigate(); mobileMenuOpen = false" class="text-sm font-semibold leading-6 text-gray-900 hover:text-red-600">
               Profile
             </button>
           </router-link>
           <router-link to="/dashboard" custom v-slot="{ navigate }">
-            <button @click="navigate; mobileMenuOpen = false" class="text-sm font-semibold leading-6 text-gray-900 hover:text-red-600">
+            <button @click="navigate(); mobileMenuOpen = false" class="text-sm font-semibold leading-6 text-gray-900 hover:text-red-600">
               Dashboard
             </button>
           </router-link>
           <router-link to="/upload-video" custom v-slot="{ navigate }">
-            <button @click="navigate; mobileMenuOpen = false" class="text-sm font-semibold leading-6 text-gray-900 hover:text-red-600">
+            <button @click="navigate(); mobileMenuOpen = false" class="text-sm font-semibold leading-6 text-gray-900 hover:text-red-600">
               Upload
             </button>
           </router-link>
@@ -109,7 +109,7 @@
                 <router-link to="/upload-video" @click="mobileMenuOpen = false" class="-mx-3 block w-full rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 text-left">
                   Upload
                 </router-link>
-                <button @click="logout; mobileMenuOpen = false" class="-mx-3 block w-full rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 text-left">
+                <button @click="logout(); mobileMenuOpen = false" class="-mx-3 block w-full rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 text-left">
                   Log out
                 </button>
               </div>
