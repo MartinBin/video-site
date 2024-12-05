@@ -5,6 +5,7 @@ export const useUserStore = defineStore('user',{
   state:()=> ({
       userName: '',
       userId: '',
+      roles: [] as string[],
   }),
   actions:{
     async setUserInfo(){
@@ -16,6 +17,7 @@ export const useUserStore = defineStore('user',{
           });
           this.userId = response.data._id;
           this.userName = response.data.username;
+          this.roles=response.data.roles;
         }
       }catch (e){
         console.error(e);

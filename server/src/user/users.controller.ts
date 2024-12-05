@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   Post,
+  Put,
   Request,
   UseGuards,
 } from '@nestjs/common';
@@ -34,7 +35,7 @@ export class UsersController {
   @UseGuards(AuthGuard('jwt'))
   async getUser(@Request() req) {
     const userId = req.user._id.toString();
-    return await this.usersService.getUserById(userId);
+    return await this.usersService.getUserById(userId, { includeRole: true });
   }
 
   @Get(':id')
@@ -45,5 +46,17 @@ export class UsersController {
   @Get(':id/video')
   async getVideo(@Param('id') id: string) {
     return await this.videosService.getVideoByUserId(id);
+  }
+
+  @Post(':id/subscribe')
+  @UseGuards(AuthGuard('jwt'))
+  async subscribeToUser(@Param('id') id:string, @Request() req){
+    return await this.usersService.subscribeUser(req.user._id.toString(),id);
+  }
+
+  @Post(':id/unsubscribe')
+  @UseGuards(AuthGuard('jwt'))
+  async unsubscribeToUser(@Param('id') id:string, @Request() req){
+    return await this.usersService.unsubscibeUser(req.user._id.toString(),id);
   }
 }

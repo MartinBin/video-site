@@ -1,6 +1,29 @@
 {
   "openapi": "3.0.0",
   "paths": {
+    "/api/videos/search": {
+      "get": {
+        "operationId": "VideosController_searchVideos",
+        "parameters": [
+          {
+            "name": "query",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "videos"
+        ]
+      }
+    },
     "/api/videos": {
       "post": {
         "operationId": "VideosController_createVideo",
@@ -35,6 +58,34 @@
         "responses": {
           "200": {
             "description": "List of all videos."
+          }
+        },
+        "tags": [
+          "videos"
+        ]
+      }
+    },
+    "/api/videos/{id}/status": {
+      "get": {
+        "operationId": "VideosController_getVideoStatus",
+        "summary": "Get video processing status",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Video ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Video processing status retrieved."
+          },
+          "404": {
+            "description": "Video not found."
           }
         },
         "tags": [
@@ -193,6 +244,52 @@
         ],
         "responses": {
           "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/api/users/{id}/subscribe": {
+      "post": {
+        "operationId": "UsersController_subscribeToUser",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/api/users/{id}/unsubscribe": {
+      "post": {
+        "operationId": "UsersController_unsubscribeToUser",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
             "description": ""
           }
         },

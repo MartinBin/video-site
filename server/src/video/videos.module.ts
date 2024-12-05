@@ -7,6 +7,7 @@ import { UsersModule } from 'src/user/users.module';
 import { VideosService } from 'src/video/videos.service';
 import { UsersService } from 'src/user/users.service';
 import { BullModule } from '@nestjs/bull';
+import { VideoProcessor } from './video.processor';
 
 @Module({
   imports: [
@@ -21,7 +22,7 @@ import { BullModule } from '@nestjs/bull';
       name: 'video',
     }),
   ],
-  providers: [VideosService],
+  providers: [VideosService, VideoProcessor],
   controllers: [VideosController],
   exports:[VideosService],
 })

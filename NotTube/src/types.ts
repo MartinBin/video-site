@@ -4,7 +4,10 @@ export interface Video {
     description: string;
     thumbnail: string | null;
     url: string;
-    userId: string;
+    userId: {
+        _id: string,
+        username: string,
+    };
 }
   
 export interface Comment {

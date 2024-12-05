@@ -16,22 +16,22 @@ export class VideoProcessor {
 
   @Process('compress')
   async handleVideoCompression(job: Job) {
-    const { videoId, inputPath, outputPath, originalFileName, compressedFileName, userIdString } = job.data;
+    const { Id, inputPath, outputPath, originalFileName, compressedFileName, userIdString, videoId } = job.data;
 
     try {
-      await this.videoModel.findByIdAndUpdate(videoId, { status: 'processing' });
+      await this.videoModel.findByIdAndUpdate(Id, { status: 'processing' });
 
       await this.compressVideo(inputPath, outputPath);
-
-      await this.videoModel.findByIdAndUpdate(videoId, {
+      console.log("After compression")
+      await this.videoModel.findByIdAndUpdate(Id, {
         status: 'completed',
         url: `/uploads/${userIdString}/${videoId}/${compressedFileName}`,
       });
-
+      console.log("Before Deletion")
       fs.unlinkSync(inputPath);
-
+      console.log("After Deletion")
     } catch (error) {
-      await this.videoModel.findByIdAndUpdate(videoId, { status: 'failed' });
+      await this.videoModel.findByIdAndUpdate(Id, { status: 'failed' });
       throw error;
     }
   }
@@ -49,7 +49,10 @@ export class VideoProcessor {
         .audioBitrate('128k')
         .output(outputPath)
         .on('end', () => resolve())
-        .on('error', (err) => reject(err))
+        .on('error', (err) => {
+          console.error('Error during video compression:', err);
+          reject(err);
+        })
         .run();
     });
   }

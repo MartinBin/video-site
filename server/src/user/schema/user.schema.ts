@@ -22,11 +22,27 @@ export class User extends Document {
   @Prop({ required: false })
   refreshToken?: string;
 
-  @Prop({ type: [String], default: [] })
-  subscribers: string[];
+  @Prop({
+    type: [
+      {
+        userId: { type: String, required: true },
+        username: { type: String, required: true },
+      },
+    ],
+    default: [],
+  })
+  subscribers: { userId: string; username: string }[];
 
-  @Prop({ type: [String], default: [] })
-  subscribed: string[];
+  @Prop({
+    type: [
+      {
+        userId: { type: String, required: true },
+        username: { type: String, required: true },
+      },
+    ],
+    default: [],
+  })
+  subscribed: { userId: string; username: string }[];
 }
 export type UserDocument = User & Document;
 export const UserSchema = SchemaFactory.createForClass(User);

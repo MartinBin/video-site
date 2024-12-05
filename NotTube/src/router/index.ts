@@ -7,6 +7,7 @@ import PageNotFound from '@/components/404Found.vue'
 import VideoUpload from '@/components/VideoUpload.vue'
 import UserProfile from '../components/UserPage.vue'
 import UserDashboard from '../components/UserDashboard.vue';
+import SearchResults from '../components/SearchResults.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -44,6 +45,12 @@ const router = createRouter({
       name: 'Dashboard',
       component: UserDashboard,
       meta: { requiresAuth: true }
+    },
+    {
+      path: '/search',
+      name: 'SearchResults',
+      component: SearchResults,
+      props: (route) => ({ query: route.query.query }),
     },
   ]
 })

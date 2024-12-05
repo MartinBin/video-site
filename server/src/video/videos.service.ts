@@ -62,36 +62,16 @@ export class VideosService {
     const savedVideo = await newVideo.save();
 
     await this.videoQueue.add('compress', {
-      videoId: savedVideo._id,
+      Id: savedVideo._id,
       inputPath: videoFilePath,
       outputPath: compressedVideoFilePath,
       originalFileName: videoFileName,
       compressedFileName: compressedVideoFileName,
       userIdString,
+      videoId: videoId
     });
 
     return savedVideo;
-  }
-
-  private async compressVideo(
-    inputPath: string,
-    outputPath: string,
-  ): Promise<void> {
-    return new Promise((resolve, reject) => {
-      ffmpeg(inputPath)
-        .videoCodec('libx264')
-        .outputOptions([
-          '-crf 28', // Compression quality (18-28 is good, lower = better quality)
-          '-preset medium', // Compression speed
-          '-movflags +faststart', // Enable fast start for web playback
-        ])
-        .audioCodec('aac')
-        .audioBitrate('128k')
-        .output(outputPath)
-        .on('end', () => resolve())
-        .on('error', (err) => reject(err))
-        .run();
-    });
   }
 
   async findOneVideo(id: string) {
@@ -103,7 +83,7 @@ export class VideosService {
     return { foundVideo, userName: user.username };
   }
   findAllVideos() {
-    return this.videoModel.find().exec();
+    return this.videoModel.find().populate('userId','username').exec();
   }
 
   async updateVideo(
@@ -182,5 +162,15 @@ export class VideosService {
       }
       throw new NotFoundException('Videos not found');
     }
+  }
+
+  async searchVideos(query: string) {
+    const regex = new RegExp(query, 'i');
+    return this.videoModel.find({
+      $or: [
+        { title: { $regex: regex } },
+        { description: { $regex: regex } },
+      ],
+    }).exec();
   }
 }

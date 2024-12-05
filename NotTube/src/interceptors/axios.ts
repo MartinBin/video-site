@@ -1,6 +1,6 @@
 import axios from "axios";
 
-axios.defaults.baseURL = import.meta.env.VITE_API_URL+"/api/" || "http://localhost:3000/api/";
+axios.defaults.baseURL = import.meta.env.VITE_API_URL+"/api/" || "http://localhost:3000/api";
 axios.defaults.withCredentials = true;
 
 let isRefreshing = false;
@@ -43,6 +43,8 @@ axios.interceptors.response.use(
         });
         console.log(data.accessToken);
         localStorage.setItem("access_token", data.accessToken);
+        
+        originalRequest.headers["Authorization"] = `Bearer ${data.accessToken}`;
         processQueue(null, data.accessToken);
 
         return axios(originalRequest);

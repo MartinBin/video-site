@@ -23,10 +23,10 @@ export default defineComponent({
       const target = event.target as HTMLInputElement;
       if (target.files && target.files[0]) {
         const file = target.files[0];
-        const maxSizeInBytes = 500 * 1024 * 1024; // 500 MB
+        const maxSizeInBytes = 1024 * 1024 * 1024; // 500 MB
 
         if (file.size > maxSizeInBytes) {
-          this.errorMessage = 'File size exceeds 500 MB limit.';
+          this.errorMessage = 'File size exceeds 1024 MB limit.';
           this.videoFile = null;
         } else {
           this.errorMessage = '';
@@ -190,7 +190,7 @@ export default defineComponent({
           <img :src="thumbnailPreview" alt="Thumbnail Preview" class="w-32 h-32 object-cover rounded-md" />
         </div>
 
-        <div v-if="videoFile && !thumbnail" class="mt-4">
+        <!---<div v-if="videoFile && !thumbnail" class="mt-4">
           <label class="block text-sm font-medium text-gray-700">Select Snippet for Thumbnail</label>
           <input
             type="range"
@@ -201,7 +201,7 @@ export default defineComponent({
             class="mt-2 w-full h-2 bg-gray-200 rounded-md"
           />
           <div class="mt-2 text-sm text-gray-600">Choose a time in the video (seconds): {{ Math.round(snippetTime) }}</div>
-        </div>
+        </div>-->
       </div>
 
       <div

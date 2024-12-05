@@ -56,13 +56,28 @@
               </div>
               <p v-else class="text-gray-700" v-html="formatContent(comment.content)"></p>
               <div v-if="auth.isAuthenticated" class="flex items-center space-x-2 mt-1">
-                <button
+                <button v-if="!userHasLiked(comment)"
                   @click="likeComment(comment)"
                   class="text-blue-600 hover:underline flex items-center space-x-1"
                 >
                   <HandThumbUpIcon class="h-4 w-4" />
                   <span>Like ({{ comment.likesCount }})</span>
                 </button>
+                <button v-else
+                  @click="unlikeComment(comment)"
+                  class="text-red-600 hover:underline flex items-center space-x-1"
+                >
+                  <HandThumbDownIcon class="h-4 w-4" />
+                  <span>Like ({{ comment.likesCount }})</span>
+                </button>
+              </div>
+              <div v-else class="flex items-center space-x-2 mt-1">
+                <div
+                  class="text-blue-600 flex items-center space-x-1"
+                >
+                  <HandThumbUpIcon class="h-4 w-4" />
+                  <span>Like ({{ comment.likesCount }})</span>
+                </div>
               </div>
             </div>
         </div>
@@ -84,7 +99,7 @@
   import {useAuthStore} from "@/stores/authStore";
   import DOMPurify from 'dompurify';
   import router from "@/router";
-  import { PencilSquareIcon, TrashIcon, HandThumbUpIcon } from '@heroicons/vue/24/outline'
+  import { PencilSquareIcon, TrashIcon, HandThumbUpIcon, HandThumbDownIcon } from '@heroicons/vue/24/outline'
   import {useUserStore} from "@/stores/userStore";
   import ConfirmationDialog from "@/components/ConfirmationDialog.vue";
   const apiUrl = ref(import.meta.env.VITE_API_URL || 'http://localhost:3000');
@@ -122,11 +137,25 @@
     return linkedDescription.replace(/\n/g, '<br>');
   };
 
+  const userHasLiked = (comment: Comment): boolean =>{
+    if (!comment.likes || comment.likes.length === 0) {
+      return false;
+    }
+    return comment.likes.some(liked => liked.userId === user.userId);
+  }
+
+  interface Like{
+    _id: string;
+    userId: string;
+    userDisplayName: string;
+  }
+
   interface Comment {
     _id: string;
     content: string;
     userDisplayName: string;
     likesCount: number;
+    likes: Like[];
     userId:string;
     isEditing: boolean;
   }
@@ -185,9 +214,27 @@
       const foundComment = comments.value.find(x => x._id === comment._id);
       if (foundComment) {
         foundComment.likesCount += 1;
+        foundComment.likes.push({ _id: response.data.likes._id, userId: response.data.likes.userId, userDisplayName: response.data.likes.userDisplayName });
       }
     } catch(error: unknown) {
       console.error('Error adding like to comment:', error);
+    }
+  }
+
+  const unlikeComment = async (comment: Comment) => {
+    try{
+      const like = comment.likes.find(liked=> liked.userId===user.userId)
+      if(like){
+        const token = localStorage.getItem("access_token");
+        const response = await  axios.delete(`videos/${videoId}/comments/${comment._id}/likes/${like._id}`,{headers: { Authorization: `Bearer ${token}` }})
+        const foundComment = comments.value.find(x => x._id === comment._id);
+        if (foundComment) {
+          foundComment.likesCount -= 1;
+          foundComment.likes = foundComment.likes.filter(liked => liked.userId !== user.userId);
+        }
+      }
+    } catch(error: unknown) {
+      console.error('Error removing like to comment:', error);
     }
   }
 
@@ -234,7 +281,7 @@
       });
 
       comments.value = comments.value.filter(c => c._id !== comment._id);
-      cancelDelete(); // Close dialog after deletion
+      cancelDelete();
     } catch (error: unknown) {
       console.error('Error deleting comment:', error);
     }

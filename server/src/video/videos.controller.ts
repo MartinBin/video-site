@@ -12,6 +12,7 @@ import {
   UsePipes,
   UseGuards,
   Req,
+  Query,
   Request, UploadedFiles,
 } from '@nestjs/common';
 import { VideosService } from './videos.service';
@@ -37,6 +38,14 @@ import { FileFieldsInterceptor } from '@nestjs/platform-express';
 @Controller('videos')
 export class VideosController {
   constructor(private readonly videosService: VideosService) {}
+  
+  @Get('search')
+  async searchVideos(@Query('query') query: string) {
+    if (!query) {
+      return [];
+    }
+    return this.videosService.searchVideos(query); 
+  }
 
   @Post()
   @UseInterceptors(
@@ -94,6 +103,23 @@ export class VideosController {
     const userId = req.user._id;
   
     return await this.videosService.createVideo(createVideoDto, video, thumbnail, userId);
+  }
+
+  @Get(':id/status')
+  @UseGuards(AuthGuard('jwt'))
+  @ApiOperation({ summary: 'Get video processing status' })
+  @ApiParam({ name: 'id', description: 'Video ID' })
+  @ApiResponse({
+    status: 200,
+    description: 'Video processing status retrieved.',
+  })
+  @ApiResponse({ status: 404, description: 'Video not found.' })
+  async getVideoStatus(@Param('id') id: string) {
+    if (!Types.ObjectId.isValid(id)) {
+      throw new BadRequestException('Invalid ID format');
+    }
+    const video = await this.videosService.findOneVideo(id);
+    return { status: video.foundVideo.status };
   }
 
   @Get(':id')
@@ -162,4 +188,5 @@ export class VideosController {
     const userRole = req.user.roles[0];
     return this.videosService.deleteVideo(id, userId, userRole);
   }
+
 }

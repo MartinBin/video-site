@@ -2,37 +2,62 @@
     <div class="container mx-auto p-6 mt-16">
       <div v-if="loading">Loading...</div>
       <div v-else class="bg-white shadow-md rounded-lg p-6">
-        <h2 class="text-2xl font-bold mb-6">My Videos</h2>
-
+        <h2 v-if="!isAdmin" class="text-2xl font-bold mb-6">My Videos</h2>
+        <h2 v-else class="text-2xl font-bold mb-6">All Videos</h2>
         <div class="grid grid-cols-1 gap-4">
-          <div v-for="video in videos" :key="video._id"
-               class="border rounded-lg p-4 flex justify-between items-center bg-gray-50">
+          <div v-for="video in paginatedVideos" :key="video.userId._id"
+              class="border rounded-lg p-4 flex justify-between items-center bg-gray-50">
             <div class="flex items-center space-x-4">
-              <img
+              <a :href="`/video/`+video._id"><img
                 :src="video.thumbnail ? apiUrl + video.thumbnail : 'default-thumbnail.jpg'"
                 class="w-32 h-20 object-cover rounded"
                 alt="Video thumbnail"
-              />
+              /></a>
               <div>
                 <h3 class="font-semibold">{{ video.title }}</h3>
                 <p class="text-sm text-gray-600">{{ video.description }}</p>
+                <p class="text-sm text-gray-500">Uploaded by: <a :href="`/user/` + video.userId._id">{{ video.userId.username }}</a></p> <!-- Display username -->
               </div>
             </div>
 
             <div class="flex space-x-2">
-              <button @click="editVideo(video)"
+              <button v-if="video.userId._id === user.userId" @click="editVideo(video)"
                       class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
                 Edit
               </button>
-              <button @click="confirmDelete(video)"
+              <button v-if="isAdmin || video.userId._id === user.userId" @click="confirmDelete(video)"
                       class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
                 Delete
               </button>
             </div>
           </div>
         </div>
-      </div>
+        
+        <nav class="isolate inline-flex -space-x-px rounded-md justify-center shadow-sm mt-4" aria-label="Pagination">
+          <a href="#" @click.prevent="prevPage" :class="{'text-gray-400': currentPage === 1, 'text-gray-900': currentPage > 1}" class="relative inline-flex items-center rounded-l-md px-2 py-2 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
+            <span class="sr-only">Previous</span>
+            <ChevronLeftIcon class="size-5" aria-hidden="true" />
+          </a>
 
+          <template v-for="page in totalPagesArray">
+            <a 
+              href="#" 
+              @click.prevent="setPage(page)" 
+              :class="{'z-10 bg-indigo-600 text-white': currentPage === page, 'text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50': currentPage !== page}" 
+              class="relative inline-flex items-center px-4 py-2 text-sm font-semibold focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              :aria-current="currentPage === page ? 'page' : undefined"
+            >
+              {{ page }}
+            </a>
+          </template>
+
+          <a href="#" @click.prevent="nextPage" :class="{'text-gray-400': currentPage === totalPages, 'text-gray-900': currentPage < totalPages}" class="relative inline-flex items-center rounded-r-md px-2 py-2 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
+            <span class="sr-only">Next</span>
+            <ChevronRightIcon class="size-5" aria-hidden="true" />
+          </a>
+        </nav>
+      </div>
+        
       <!-- Edit Modal -->
       <div v-if="showEditModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
         <div class="bg-white p-6 rounded-lg w-full max-w-md">
@@ -88,11 +113,12 @@
   </template>
 
   <script setup lang="ts">
-  import { ref, onMounted } from 'vue';
+  import { ref, onMounted, computed } from 'vue';
   import axios from 'axios';
   import { useUserStore } from '@/stores/userStore';
   import router from "@/router";
   import { type Video } from '@/types'
+  import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/vue/20/solid'
 
   const user = useUserStore();
   const videos = ref<Video[]>([])
@@ -102,10 +128,44 @@
   const editingVideo = ref<Video | null>(null)
   const videoToDelete = ref<Video | null>(null)
   const apiUrl = ref(import.meta.env.VITE_API_URL || 'http://localhost:3000');
+  const isAdmin = ref(user.roles.includes('admin'));
+  
+  const currentPage = ref(1);
+  const itemsPerPage = 5;
+
+  const paginatedVideos = computed(() => {
+    const start = (currentPage.value - 1) * itemsPerPage;
+    return videos.value.slice(start, start + itemsPerPage);
+  });
+
+  const totalPages = computed(() => {
+    return Math.ceil(videos.value.length / itemsPerPage);
+  });
+
+  const totalPagesArray = computed(() => {
+    return Array.from({ length: totalPages.value }, (_, i) => i + 1);
+  });
+
+  const setPage = (page: number) => {
+    currentPage.value = page;
+  };
+
+  const nextPage = () => {
+    if (currentPage.value < totalPages.value) {
+      currentPage.value++;
+    }
+  };
+
+  const prevPage = () => {
+    if (currentPage.value > 1) {
+      currentPage.value--;
+    }
+  };
+
   const getUserVideos = async () => {
     try {
-      const response = await axios.get(`/users/${user.userId}/video`);
-      videos.value = response.data;
+      const response = await axios.get(isAdmin.value ? `/videos` : `/users/${user.userId}/video`);
+      videos.value = response.data.sort((a:any, b:any) => a.userId._id.localeCompare(b.userId._id)); // Sort by userId
     } catch (e) {
       console.error('Error fetching user videos:', e);
     }
@@ -158,7 +218,7 @@
 
   onMounted(async () => {
     if (!user.userId) {
-      router.push('/login');
+      router.push('/');
       return;
     }
 

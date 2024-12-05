@@ -12,7 +12,7 @@ async function bootstrap() {
   app.useStaticAssets(join(__dirname, '..', 'uploads'), {
     prefix: '/uploads',
   });
-  app.use(json({ limit: '500mb' }));
+  app.use(json({ limit: '1024mb' }));
   app.useGlobalPipes(new ValidationPipe());
   app.setGlobalPrefix('api');
 

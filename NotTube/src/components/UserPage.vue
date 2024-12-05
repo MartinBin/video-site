@@ -6,6 +6,16 @@
         <div class="h-20 w-20 rounded-full bg-gray-300"></div>
         <div>
           <h2 class="text-xl font-bold text-gray-900">{{ profile.username }}</h2>
+          <p class="text-sm text-gray-600" 
+            :title="subscriberTooltip">
+            Subscribers: {{ profile.subscribers.length }}
+          </p>
+          <button v-if="userId!==user.userId && !profile.subscribers.some(subscriber => subscriber.userId===user.userId) && auth.isAuthenticated" @click="subscribeToUser" class="mt-4 bg-blue-500 text-white py-2 px-4 rounded">
+            Subscribe
+          </button>
+          <button v-if="profile.subscribers.some(subscriber => subscriber.userId===user.userId) && auth.isAuthenticated" @click="unsubscribeToUser" class="mt-4 bg-red-500 text-white py-2 px-4 rounded">
+            Unsubscribe
+          </button>
         </div>
       </div>
       <h3 class="text-lg font-semibold mb-3">Uploaded Videos</h3>
@@ -39,9 +49,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import axios from 'axios';
 import { useUserStore } from '@/stores/userStore';
+import { useAuthStore } from '@/stores/authStore';
 import router from "@/router";
 import { useRoute } from "vue-router";
 import { type Video } from '@/types'
@@ -50,6 +61,7 @@ const user = useUserStore();
 const profile = ref<Profile>();
 const videos = ref<Video[]>([]);
 const loading = ref(true);
+const auth = useAuthStore();
 
 const apiUrl = ref(import.meta.env.VITE_API_URL || 'http://localhost:3000');
 
@@ -57,10 +69,17 @@ interface Profile {
   _id: string;
   username: string;
   email: string;
-  subscribers: number;
-  subscribed: string;
+  subscribers:[{
+    userId: string,
+    username: string,
+  }];
+  subscribed: string[];
   isEditing: boolean;
 }
+
+const subscriberTooltip = computed(() => {
+  return profile.value?.subscribers.slice(0, 3).join(', ') || '';
+});
 
 const route = useRoute();
 const userId = route.params.id as string;
@@ -76,6 +95,42 @@ const getUserVideos = async () => {
 
 const openVideo= (id: string) =>{
   router.push(`/video/${id}`);
+};
+
+const subscribeToUser = async () => {
+  try {
+    const token = localStorage.getItem("access_token");
+    const response=await axios.post(`/users/${userId}/subscribe`,
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+    profile.value?.subscribers.push(response.data);
+  } catch (error) {
+    console.error('Error subscribing to user:', error);
+  }
+};
+
+const unsubscribeToUser = async () => {
+  try {
+    const token = localStorage.getItem("access_token");
+    const response=await axios.post(`/users/${userId}/unsubscribe`,
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+    const unsubscribedUserId = response.data.userId;
+
+    const index = profile.value?.subscribers.findIndex(
+      (subscriber) => subscriber.userId === unsubscribedUserId
+    );
+
+    if (index !== undefined && index !== -1) {
+      profile.value?.subscribers.splice(index, 1);
+    } else {
+      console.error("Subscriber not found in the list");
+    }
+  } catch (error) {
+    console.error('Error unsubscribing to user:', error);
+  }
 };
 
 onMounted(async () => {
