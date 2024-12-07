@@ -16,11 +16,16 @@ dotenv.config();
 
 @Module({
   imports: [
-    BullModule.forRoot({
-      redis: {
-        host: 'localhost',
-        port: 6379,
-      },
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        redis: {
+          host: configService.get<string>('REDIS_HOST'),
+          port: configService.get<number>('REDIS_PORT'),
+          //password: configService.get<string>('REDIS_PASSWORD'),
+        },
+      }),
+      inject: [ConfigService],
     }),
     ConfigModule.forRoot({
       isGlobal: true,
@@ -40,7 +45,7 @@ dotenv.config();
     MulterModule.register({
       dest: './uploads',
       limits: {
-        fileSize: 524288000, // 500MB in bytes
+        fileSize: 1073741824, // 500MB in bytes
       },
     }),
   ],

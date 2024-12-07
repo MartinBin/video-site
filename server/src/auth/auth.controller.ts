@@ -2,7 +2,7 @@ import {Controller, Post, Body, UnauthorizedException, Request, UseGuards} from 
 import { AuthService } from './auth.service';
 import { CreateUserDto } from 'src/auth/dto/create-user.dto';
 import { LoginUserDto } from 'src/auth/dto/login-user.dto';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import {ApiBody, ApiOperation, ApiResponse} from '@nestjs/swagger';
 import { JwtService } from '@nestjs/jwt';
 import {UsersService} from "../user/users.service";
 import {AuthGuard} from "@nestjs/passport";
@@ -30,6 +30,10 @@ export class AuthController {
   }
 
   @Post('refresh')
+  @ApiOperation({ summary: 'Refresh the access token using a refresh token' })
+  @ApiResponse({ status: 200, description: 'New access token generated successfully.', type: Object })
+  @ApiResponse({ status: 401, description: 'Invalid or expired refresh token.' })
+  @ApiBody({ type: String, description: 'The refresh token' })
   async refreshToken(@Body('refreshToken') refreshToken: string) {
     try {
       const payload = this.jwtService.verify(refreshToken);
@@ -58,6 +62,9 @@ export class AuthController {
 
   @UseGuards(AuthGuard('jwt'))
   @Post('logout')
+  @ApiOperation({ summary: 'Logout the currently logged-in user' })
+  @ApiResponse({ status: 200, description: 'Logout successful. Refresh token invalidated.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized - Please log in.' })
   async logout(@Request() req) {
 
     await this.usersService.invalidateRefreshToken(req.user._id);

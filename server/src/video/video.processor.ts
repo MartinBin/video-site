@@ -22,14 +22,14 @@ export class VideoProcessor {
       await this.videoModel.findByIdAndUpdate(Id, { status: 'processing' });
 
       await this.compressVideo(inputPath, outputPath);
-      console.log("After compression")
+
       await this.videoModel.findByIdAndUpdate(Id, {
         status: 'completed',
         url: `/uploads/${userIdString}/${videoId}/${compressedFileName}`,
       });
-      console.log("Before Deletion")
+
       fs.unlinkSync(inputPath);
-      console.log("After Deletion")
+
     } catch (error) {
       await this.videoModel.findByIdAndUpdate(Id, { status: 'failed' });
       throw error;

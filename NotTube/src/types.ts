@@ -9,7 +9,7 @@ export interface Video {
         username: string,
     };
 }
-  
+
 export interface Comment {
     _id: string;
     content: string;
@@ -17,4 +17,10 @@ export interface Comment {
     likesCount: number;
     userId: string;
     isEditing: boolean;
+}
+
+export interface User{
+  _id: string;
+  username: string;
+  email: string;
 }

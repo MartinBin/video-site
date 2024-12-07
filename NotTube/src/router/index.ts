@@ -8,6 +8,7 @@ import VideoUpload from '@/components/VideoUpload.vue'
 import UserProfile from '../components/UserPage.vue'
 import UserDashboard from '../components/UserDashboard.vue';
 import SearchResults from '../components/SearchResults.vue';
+import AllUsers from '../components/AllUsers.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -52,6 +53,12 @@ const router = createRouter({
       component: SearchResults,
       props: (route) => ({ query: route.query.query }),
     },
+    {
+      path: '/users',
+      name: 'All users',
+      component: AllUsers,
+      meta: { requiresAuth: true }
+    }
   ]
 })
 

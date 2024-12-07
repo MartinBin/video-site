@@ -6,13 +6,20 @@ import { User, UserSchema } from './schema/user.schema';
 import * as dotenv from 'dotenv';
 import {VideosService} from "../video/videos.service";
 import {VideoModule} from "../video/videos.module";
+import {Video, VideoSchema} from "../video/schema/video.schema";
 
 dotenv.config();
 
 @Module({
   imports: [
     forwardRef(() => VideoModule),
-    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+    MongooseModule.forFeature([
+      { name: User.name, schema: UserSchema },
+      {
+        name: Video.name,
+        schema: VideoSchema,
+      },
+    ]),
   ],
   providers: [UsersService],
   controllers: [UsersController],

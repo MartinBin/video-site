@@ -6,20 +6,35 @@ import { User } from '../../user/schema/user.schema';
 
 @Schema({ timestamps: true })
 export class Comment extends Document {
+  @ApiProperty({
+    description: 'The content of the comment.',
+    example: 'This is a comment.',
+  })
   @Prop({ required: true })
-  @ApiProperty({ description: 'Comment text' })
   content: string;
 
+  @ApiProperty({
+    description: 'The user who created the comment.',
+    type: () => User,
+  })
   @Prop({ type: Types.ObjectId, ref: User.name, required: true })
   userId: string;
 
-  @Prop({ type: [LikeSchema] })
-  @ApiProperty({ description: 'Likes for comment' })
+  @ApiProperty({
+    description: 'List of likes on the comment.',
+    type: () => [Like],
+  })
+  @Prop({ type: [LikeSchema], default: [] })
   likes: Like[];
 
+  @ApiProperty({
+    description: 'The display name of the user who created the comment.',
+    example: 'JohnDoe',
+    required: false,
+  })
   @Prop({ type: String, required: false })
-  @ApiProperty({ description: 'Users username of who created the comment' })
   userDisplayName: string;
 }
+
 export type CommentDocument = Comment & Document;
 export const CommentSchema = SchemaFactory.createForClass(Comment);

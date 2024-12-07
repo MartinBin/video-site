@@ -1,63 +1,69 @@
 <template>
-    <div class="container mx-auto p-6 mt-16">
-      <div v-if="loading">Loading...</div>
-      <div v-else class="bg-white shadow-md rounded-lg p-6">
-        <h2 v-if="!isAdmin" class="text-2xl font-bold mb-6">My Videos</h2>
-        <h2 v-else class="text-2xl font-bold mb-6">All Videos</h2>
-        <div class="grid grid-cols-1 gap-4">
-          <div v-for="video in paginatedVideos" :key="video.userId._id"
-              class="border rounded-lg p-4 flex justify-between items-center bg-gray-50">
-            <div class="flex items-center space-x-4">
-              <a :href="`/video/`+video._id"><img
-                :src="video.thumbnail ? apiUrl + video.thumbnail : 'default-thumbnail.jpg'"
-                class="w-32 h-20 object-cover rounded"
-                alt="Video thumbnail"
-              /></a>
-              <div>
-                <h3 class="font-semibold">{{ video.title }}</h3>
-                <p class="text-sm text-gray-600">{{ video.description }}</p>
-                <p class="text-sm text-gray-500">Uploaded by: <a :href="`/user/` + video.userId._id">{{ video.userId.username }}</a></p> <!-- Display username -->
-              </div>
+  <div class="container mx-auto p-4 sm:p-6 mt-8 sm:mt-16">
+    <div v-if="loading" class="text-center">Loading...</div>
+    <div v-else class="bg-white shadow-md rounded-lg p-4 sm:p-6">
+      <h2 :class="'text-2xl font-bold mb-4 sm:mb-6'">
+        {{ isAdmin ? 'All Videos' : 'My Videos' }}
+      </h2>
+      <div class="space-y-4 sm:space-y-6">
+        <div v-for="video in paginatedVideos" :key="video.userId._id"
+             class="border rounded-lg p-4 flex flex-col sm:flex-row items-center sm:items-start bg-gray-50">
+          <a :href="`/video/` + video._id">
+            <img
+              :src="video.thumbnail ? apiUrl + video.thumbnail : 'default-thumbnail.jpg'"
+              class="w-full sm:w-32 h-auto object-cover rounded mb-4 sm:mb-0 sm:mr-4"
+              alt="Video thumbnail"
+            />
+          </a>
+          <div class="flex flex-col sm:flex-row sm:items-start sm:w-full">
+            <div class="text-center sm:text-left sm:w-3/4">
+              <h3 class="font-semibold">{{ video.title }}</h3>
+              <p class="text-sm text-gray-600 truncate">{{ video.description }}</p>
+              <p class="text-sm text-gray-500">
+                Uploaded by:
+                <a :href="`/user/` + video.userId._id" class="text-indigo-500">
+                  {{ video.userId.username }}
+                </a>
+              </p>
             </div>
-
-            <div class="flex space-x-2">
-              <button v-if="video.userId._id === user.userId" @click="editVideo(video)"
-                      class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+            <div class="flex mt-4 sm:mt-0 space-x-2 sm:w-1/4 sm:justify-end sm:ml-4">
+              <button v-if="video.userId._id === user.userId"
+                      @click="editVideo(video)"
+                      class="bg-blue-500 text-white px-3 py-2 rounded hover:bg-blue-600">
                 Edit
               </button>
-              <button v-if="isAdmin || video.userId._id === user.userId" @click="confirmDelete(video)"
-                      class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
+              <button v-if="isAdmin || video.userId._id === user.userId"
+                      @click="confirmDelete(video)"
+                      class="bg-red-500 text-white px-3 py-2 rounded hover:bg-red-600">
                 Delete
               </button>
             </div>
           </div>
         </div>
-        
-        <nav class="isolate inline-flex -space-x-px rounded-md justify-center shadow-sm mt-4" aria-label="Pagination">
-          <a href="#" @click.prevent="prevPage" :class="{'text-gray-400': currentPage === 1, 'text-gray-900': currentPage > 1}" class="relative inline-flex items-center rounded-l-md px-2 py-2 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
-            <span class="sr-only">Previous</span>
-            <ChevronLeftIcon class="size-5" aria-hidden="true" />
-          </a>
-
-          <template v-for="page in totalPagesArray">
-            <a 
-              href="#" 
-              @click.prevent="setPage(page)" 
-              :class="{'z-10 bg-indigo-600 text-white': currentPage === page, 'text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50': currentPage !== page}" 
-              class="relative inline-flex items-center px-4 py-2 text-sm font-semibold focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-              :aria-current="currentPage === page ? 'page' : undefined"
-            >
-              {{ page }}
-            </a>
-          </template>
-
-          <a href="#" @click.prevent="nextPage" :class="{'text-gray-400': currentPage === totalPages, 'text-gray-900': currentPage < totalPages}" class="relative inline-flex items-center rounded-r-md px-2 py-2 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
-            <span class="sr-only">Next</span>
-            <ChevronRightIcon class="size-5" aria-hidden="true" />
-          </a>
-        </nav>
       </div>
-        
+
+      <!-- Pagination -->
+      <nav class="flex justify-center sm:justify-start mt-4">
+        <button @click.prevent="prevPage"
+                :disabled="currentPage === 1"
+                class="px-4 py-2 text-sm rounded-l-md bg-gray-200 hover:bg-gray-300">
+          Previous
+        </button>
+        <span v-for="page in totalPagesArray" :key="page"
+              @click.prevent="setPage(page)"
+              :class="{'bg-indigo-600 text-white': currentPage === page, 'bg-gray-200': currentPage !== page}"
+              class="px-4 py-2 cursor-pointer">
+          {{ page }}
+        </span>
+        <button @click.prevent="nextPage"
+                :disabled="currentPage === totalPages"
+                class="px-4 py-2 text-sm rounded-r-md bg-gray-200 hover:bg-gray-300">
+          Next
+        </button>
+      </nav>
+    </div>
+  </div>
+
       <!-- Edit Modal -->
       <div v-if="showEditModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
         <div class="bg-white p-6 rounded-lg w-full max-w-md">
@@ -65,17 +71,17 @@
           <form @submit.prevent="updateVideo">
             <div class="mb-4">
               <label class="block text-sm font-medium mb-1">Title</label>
-              <input 
-                v-model="editingVideo!.title" 
-                type="text" 
+              <input
+                v-model="editingVideo!.title"
+                type="text"
                 class="w-full border rounded p-2"
               >
             </div>
             <div class="mb-4">
               <label class="block text-sm font-medium mb-1">Description</label>
-              <textarea 
-                v-model="editingVideo!.description" 
-                class="w-full border rounded p-2" 
+              <textarea
+                v-model="editingVideo!.description"
+                class="w-full border rounded p-2"
                 rows="3"
               ></textarea>
             </div>
@@ -102,14 +108,13 @@
                     class="bg-gray-300 px-4 py-2 rounded">
               Cancel
             </button>
-            <button @click="deleteVideo"
+            <button @click="deleteVideo()"
                     class="bg-red-500 text-white px-4 py-2 rounded">
               Delete
             </button>
           </div>
         </div>
       </div>
-    </div>
   </template>
 
   <script setup lang="ts">
@@ -129,7 +134,7 @@
   const videoToDelete = ref<Video | null>(null)
   const apiUrl = ref(import.meta.env.VITE_API_URL || 'http://localhost:3000');
   const isAdmin = ref(user.roles.includes('admin'));
-  
+
   const currentPage = ref(1);
   const itemsPerPage = 5;
 

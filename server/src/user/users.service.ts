@@ -1,17 +1,21 @@
 import {
   BadRequestException,
   Injectable,
-  NotFoundException,
+  NotFoundException, UnauthorizedException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateUserDto } from 'src/auth/dto/create-user.dto';
 import { User } from './schema/user.schema';
 import * as bcrypt from 'bcrypt';
+import * as path from 'path';
+import * as fs from 'fs';
+import {Video} from "../video/schema/video.schema";
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
+  constructor(@InjectModel(User.name) private userModel: Model<User>,
+              @InjectModel(Video.name) private videoModel: Model<Video>,) {}
 
   async findOneByEmail(email: string) {
     return await this.userModel.findOne({ email });
@@ -116,5 +120,48 @@ export class UsersService {
     }
 
     return { userId: subscriber._id.toString(), username: subscriber.username };
+  }
+
+  async deleteUser(id: string, userId: string, userRole: any) {
+    const user = await this.userModel.findById(id).exec();
+
+    console.log(user, userId, userRole)
+    if (!user) {
+      throw new NotFoundException(`User with ID "${id}" not found`);
+    }
+
+    if (userRole !== 'admin' && user._id.toString() !== userId) {
+      throw new UnauthorizedException('You are not authorized to delete this user');
+    }
+
+    const userVideos = await this.videoModel.find({ userId: user._id }).exec();
+    if (userVideos.length > 0) {
+      for (const video of userVideos) {
+        await this.videoModel.findByIdAndDelete(video._id).exec();
+      }
+    }
+
+    const userDir = path.join(
+      __dirname,
+      '..',
+      '..',
+      'uploads',
+      user._id.toString(),
+    );
+
+    if (fs.existsSync(userDir)) {
+      fs.rmSync(userDir, { recursive: true, force: true });
+    }
+
+    const deletedUser = await this.userModel.findByIdAndDelete(id).exec();
+    if (!deletedUser) {
+      throw new NotFoundException(`User with ID "${id}" not found`);
+    }
+
+    return deletedUser;
+  }
+
+  async getAllUsers() {
+    return await this.userModel.find().select('-password -refreshToken -roles').exec();
   }
 }
